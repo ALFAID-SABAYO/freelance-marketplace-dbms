@@ -140,8 +140,73 @@ app.get('/pclient&cat', async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
+// Proposals per Project
+app.get('/proposals/projectId', async (req, res) => {
+    const { projectId } = req.params;
+    try {
+        const result = await pool.query(`
+            SELECT u.full_name AS freelancer, p.bid_amount, p.message
+            FROM proposals p
+            JOIN users u ON p.freelancer_id = u.user_id
+            WHERE p.project_id = $1
+        `, [projectId]);
+        res.json(result.rows);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Completed Contracts with Freelancer & Client Info
+app.get('/contracts/completed', async (req, res) => {
+    try {
+        const result = await pool.query(`
+            SELECT c.contract_id, f.full_name AS freelancer, cl.full_name AS client, c.start_date, c.end_date
+            FROM contracts c
+            JOIN projects p ON c.project_id = p.project_id
+            JOIN users f ON c.freelancer_id = f.user_id
+            JOIN users cl ON p.client_id = cl.user_id
+            WHERE c.status = 'completed'
+        `);
+        res.json(result.rows);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+// Reviews with Ratings for Freelancers
+app.get('/reviewswitrating', async (req, res) => {
+    try {
+        const result = await pool.query(`
+            SELECT u.full_name AS freelancer, r.rating, r.comment
+            FROM reviews r
+            JOIN contracts c ON r.contract_id = c.contract_id
+            JOIN users u ON c.freelancer_id = u.user_id
+        `);
+        res.json(result.rows);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Messages Exchanged Between Two Users
+app.get('/messages/:user1/:user2', async (req, res) => {
+    const { user1, user2 } = req.params;
+    try {
+        const result = await pool.query(`
+            SELECT m.sender_id, s.full_name AS sender, r.full_name AS receiver, m.content, m.sent_at
+            FROM messages m
+            JOIN users s ON m.sender_id = s.user_id
+            JOIN users r ON m.receiver_id = r.user_id
+            WHERE (m.sender_id = $1 AND m.receiver_id = $2) OR (m.sender_id = $2 AND m.receiver_id = $1)
+            ORDER BY m.sent_at
+        `, [user1, user2]);
+        res.json(result.rows);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
 
 
+ 
 const PORT = process.env.PORT;
 
 app.listen(PORT, () => {
