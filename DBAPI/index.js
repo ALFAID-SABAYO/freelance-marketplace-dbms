@@ -109,6 +109,7 @@ app.get('/user', async (req, res) => {
         res.status(500).json({ Error: err.message });
     }
 });
+//  List Freelancers with Skills
 app.get('/fskills', async (req, res) => {
     try {
         const result = await pool.query(`
@@ -124,6 +125,22 @@ app.get('/fskills', async (req, res) => {
         res.status(500).json({ Error: err.message });
     }
 });
+// List Projects with Client Name and Category
+app.get('/pclient&cat', async (req, res) => {
+    try {
+        const result = await pool.query(`
+            SELECT p.title, p.description, c.name AS category, u.full_name AS client_name, p.budget
+            FROM projects p
+            JOIN categories c ON p.category_id = c.category_id
+            JOIN users u ON p.client_id = u.user_id
+            ORDER BY p.project_id
+        `);
+        res.json(result.rows);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
 
 const PORT = process.env.PORT;
 
