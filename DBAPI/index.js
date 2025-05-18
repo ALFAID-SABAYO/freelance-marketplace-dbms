@@ -109,6 +109,22 @@ app.get('/user', async (req, res) => {
         res.status(500).json({ Error: err.message });
     }
 });
+app.get('/fskills', async (req, res) => {
+    try {
+        const result = await pool.query(`
+            SELECT u.full_name AS freelancer_name, s.name AS skills 
+            FROM users u 
+            JOIN freelancer_skills fs ON u.user_id = fs.user_id 
+            JOIN skills s ON fs.skill_id = s.skill_id 
+            WHERE u.user_type = 'freelancer' 
+            ORDER BY u.full_name
+        `);
+        res.json(result.rows);
+    } catch (err) {
+        res.status(500).json({ Error: err.message });
+    }
+});
+
 const PORT = process.env.PORT;
 
 app.listen(PORT, () => {
