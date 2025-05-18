@@ -141,20 +141,20 @@ app.get('/pclient&cat', async (req, res) => {
     }
 });
 // Proposals per Project
-app.get('/proposals/projectId', async (req, res) => {
-    const { projectId } = req.params;
-    try {
-        const result = await pool.query(`
-            SELECT u.full_name AS freelancer, p.bid_amount, p.message
-            FROM proposals p
-            JOIN users u ON p.freelancer_id = u.user_id
-            WHERE p.project_id = $1
-        `, [projectId]);
-        res.json(result.rows);
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
+// app.get('/proposals/projectId', async (req, res) => {
+//     const { projectId } = req.params;
+//     try {
+//         const result = await pool.query(`
+//             SELECT u.full_name AS freelancer, p.bid_amount, p.message
+//             FROM proposals p
+//             JOIN users u ON p.freelancer_id = u.user_id
+//             WHERE p.project_id = $1
+//         `, [projectId]);
+//         res.json(result.rows);
+//     } catch (err) {
+//         res.status(500).json({ error: err.message });
+//     }
+// });
 
 // Completed Contracts with Freelancer & Client Info
 app.get('/contracts/completed', async (req, res) => {
@@ -205,6 +205,89 @@ app.get('/messages/:user1/:user2', async (req, res) => {
     }
 });
 
+// Get top-rated freelancers by average review rating
+app.get('/freelancers/top-rated', async (req, res) => {
+    try {
+        const result = await pool.query(`
+            SELECT u.full_name AS freelancer, AVG(r.rating) AS average_rating, COUNT(r.rating) AS total_reviews
+            FROM reviews r
+            JOIN contracts c ON r.contract_id = c.contract_id
+            JOIN users u ON c.freelancer_id = u.user_id
+            GROUP BY u.user_id
+            HAVING COUNT(r.rating) >= 1
+            ORDER BY average_rating DESC
+        `);
+        res.json(result.rows);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Get freelancers by specific skill (use query ?skill=React)
+app.get('/freelancers/by-skill', async (req, res) => {
+    const { skill } = req.query;
+    try {
+        const result = await pool.query(`
+            SELECT u.full_name AS freelancer_name, s.name AS skill
+            FROM users u
+            JOIN freelancer_skills fs ON u.user_id = fs.user_id
+            JOIN skills s ON fs.skill_id = s.skill_id
+            WHERE u.user_type = 'freelancer' AND s.name ILIKE $1
+        `, [skill]);
+        res.json(result.rows);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// List open projects that have received no proposals yet
+app.get('/projects/no-proposals', async (req, res) => {
+    try {
+        const result = await pool.query(`
+            SELECT p.project_id, p.title, p.description
+            FROM projects p
+            LEFT JOIN proposals pr ON p.project_id = pr.project_id
+            WHERE pr.project_id IS NULL
+        `);
+        res.json(result.rows);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Get clients with how many projects they've posted
+app.get('/clients/project-count', async (req, res) => {
+    try {
+        const result = await pool.query(`
+            SELECT u.full_name AS client, COUNT(p.project_id) AS total_projects
+            FROM users u
+            JOIN projects p ON u.user_id = p.client_id
+            WHERE u.user_type = 'client'
+            GROUP BY u.user_id
+            ORDER BY total_projects DESC
+        `);
+        res.json(result.rows);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Total earnings per freelancer from completed contracts
+app.get('/freelancers/earnings', async (req, res) => {
+    try {
+        const result = await pool.query(`
+            SELECT u.full_name AS freelancer, SUM(c.payment_amount) AS total_earned
+            FROM contracts c
+            JOIN users u ON c.freelancer_id = u.user_id
+            WHERE c.status = 'completed'
+            GROUP BY u.user_id
+            ORDER BY total_earned DESC
+        `);
+        res.json(result.rows);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
 
  
 const PORT = process.env.PORT;
