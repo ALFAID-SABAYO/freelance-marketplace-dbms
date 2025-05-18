@@ -22,9 +22,15 @@ app.get('/', async (req, res) => {
 
 app.get('/user', async (req, res) => {
     try {
-        const result = await pool.query('select * from user');
+        const result = await pool.query('select * from users');
         res.json(result.rows)
     } catch (err) {
         res.status(500).json({ Error: err.message })
     }
+});
+
+const PORT = process.env.PORT;
+
+app.listen(PORT, () => {
+    console.log(`Connect successfully...on PORT ${PORT}`);
 });
