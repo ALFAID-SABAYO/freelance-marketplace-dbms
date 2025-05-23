@@ -8,15 +8,15 @@ fetch(contracts_URL)
     .then(data => {
         const tbody = document.querySelector("#contractsTable tbody");
 
-        data.forEach(contract => {
+        data.forEach(contracts => {
             const row = document.createElement("tr");
             row.innerHTML = `
-                <td>${contract.contract_id}</td>
-                <td>${contract.project_id}</td>
-                <td>${contract.freelancer_id}</td>
-                <td>${contract.start_date}</td>
-                <td>${contract.end_date}</td>
-                <td>${contract.status}</td>
+                <td>${contracts.contract_id}</td>
+                <td>${contracts.project_id}</td>
+                <td>${contracts.freelancer_id}</td>
+                <td>${contracts.start_date}</td>
+                <td>${contracts.end_date}</td>
+                <td>${contracts.status}</td>
             `;
             tbody.appendChild(row);
         });
