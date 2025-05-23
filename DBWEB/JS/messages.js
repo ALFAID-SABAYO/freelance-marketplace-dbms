@@ -1,4 +1,4 @@
-const messages_URL = "Yhttps://miniature-computing-machine-v6rgxgqx6wg2xj96-5249.app.github.dev/mess";
+const messages_URL = "https://miniature-computing-machine-v6rgxgqx6wg2xj96-5249.app.github.dev/mess";
 
 fetch(messages_URL)
     .then(response => {
