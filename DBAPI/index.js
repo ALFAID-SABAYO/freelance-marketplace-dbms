@@ -303,6 +303,33 @@ app.post('/users', async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
+// PUT /users/:id
+// Update user details by user_id
+app.put('/users/:id', async (req, res) => {
+  const { id } = req.params;
+  const { username, email, password, full_name, user_type } = req.body;
+
+  try {
+    const result = await pool.query(
+      `UPDATE users
+       SET username = $1,
+           email = $2,
+           password = $3,
+           full_name = $4,
+           user_type = $5
+       WHERE user_id = $6
+       RETURNING *`,
+      [username, email, password, full_name, user_type, id]
+    );
+
+    if (result.rows.length === 0) return res.status(404).json({ message: 'User not found' });
+
+    res.json({ message: 'User updated successfully', user: result.rows[0] });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 
 // POST /categories
 app.post('/categories', async (req, res) => {
@@ -317,6 +344,30 @@ app.post('/categories', async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
+// PUT /categories/:id
+// Update category details by category_id
+app.put('/categories/:id', async (req, res) => {
+  const { id } = req.params;
+  const { name, description } = req.body;
+
+  try {
+    const result = await pool.query(
+      `UPDATE categories
+       SET name = $1,
+           description = $2
+       WHERE category_id = $3
+       RETURNING *`,
+      [name, description, id]
+    );
+
+    if (result.rows.length === 0) return res.status(404).json({ message: 'Category not found' });
+
+    res.json({ message: 'Category updated successfully', category: result.rows[0] });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 
 // POST /skills
 app.post('/skills', async (req, res) => {
@@ -331,6 +382,29 @@ app.post('/skills', async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
+// PUT /skills/:id
+// Update skill name by skill_id
+app.put('/skills/:id', async (req, res) => {
+  const { id } = req.params;
+  const { name } = req.body;
+
+  try {
+    const result = await pool.query(
+      `UPDATE skills
+       SET name = $1
+       WHERE skill_id = $2
+       RETURNING *`,
+      [name, id]
+    );
+
+    if (result.rows.length === 0) return res.status(404).json({ message: 'Skill not found' });
+
+    res.json({ message: 'Skill updated successfully', skill: result.rows[0] });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 
 // POST /freelancer_skills
 app.post('/freelancer_skills', async (req, res) => {
@@ -345,6 +419,31 @@ app.post('/freelancer_skills', async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
+// PUT /freelancer_skills/:id
+// Update freelancer skill by freelancer_skill_id (if exists) or use user_id and skill_id in body
+// Assuming you have freelancer_skill_id as PK for simplicity
+app.put('/freelancer_skills/:id', async (req, res) => {
+  const { id } = req.params;
+  const { user_id, skill_id } = req.body;
+
+  try {
+    const result = await pool.query(
+      `UPDATE freelancer_skills
+       SET user_id = $1,
+           skill_id = $2
+       WHERE freelancer_skill_id = $3
+       RETURNING *`,
+      [user_id, skill_id, id]
+    );
+
+    if (result.rows.length === 0) return res.status(404).json({ message: 'Freelancer skill not found' });
+
+    res.json({ message: 'Freelancer skill updated successfully', freelancer_skill: result.rows[0] });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 
 // POST /projects
 app.post('/projects', async (req, res) => {
@@ -359,6 +458,33 @@ app.post('/projects', async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
+// PUT /projects/:id
+// Update project details by project_id
+app.put('/projects/:id', async (req, res) => {
+  const { id } = req.params;
+  const { client_id, title, description, category_id, budget } = req.body;
+
+  try {
+    const result = await pool.query(
+      `UPDATE projects
+       SET client_id = $1,
+           title = $2,
+           description = $3,
+           category_id = $4,
+           budget = $5
+       WHERE project_id = $6
+       RETURNING *`,
+      [client_id, title, description, category_id, budget, id]
+    );
+
+    if (result.rows.length === 0) return res.status(404).json({ message: 'Project not found' });
+
+    res.json({ message: 'Project updated successfully', project: result.rows[0] });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 
 // POST /proposals
 app.post('/proposals', async (req, res) => {
@@ -373,6 +499,32 @@ app.post('/proposals', async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
+// PUT /proposals/:id
+// Update proposal details by proposal_id
+app.put('/proposals/:id', async (req, res) => {
+  const { id } = req.params;
+  const { project_id, freelancer_id, bid_amount, message } = req.body;
+
+  try {
+    const result = await pool.query(
+      `UPDATE proposals
+       SET project_id = $1,
+           freelancer_id = $2,
+           bid_amount = $3,
+           message = $4
+       WHERE proposal_id = $5
+       RETURNING *`,
+      [project_id, freelancer_id, bid_amount, message, id]
+    );
+
+    if (result.rows.length === 0) return res.status(404).json({ message: 'Proposal not found' });
+
+    res.json({ message: 'Proposal updated successfully', proposal: result.rows[0] });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 
 // POST /contracts
 app.post('/contracts', async (req, res) => {
@@ -388,6 +540,33 @@ app.post('/contracts', async (req, res) => {
     }
 });
 
+// PUT /contracts/:id
+// Update contract details by contract_id
+app.put('/contracts/:id', async (req, res) => {
+  const { id } = req.params;
+  const { project_id, freelancer_id, start_date, end_date, status } = req.body;
+
+  try {
+    const result = await pool.query(
+      `UPDATE contracts
+       SET project_id = $1,
+           freelancer_id = $2,
+           start_date = $3,
+           end_date = $4,
+           status = $5
+       WHERE contract_id = $6
+       RETURNING *`,
+      [project_id, freelancer_id, start_date, end_date, status, id]
+    );
+
+    if (result.rows.length === 0) return res.status(404).json({ message: 'Contract not found' });
+
+    res.json({ message: 'Contract updated successfully', contract: result.rows[0] });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // POST /reviews
 app.post('/reviews', async (req, res) => {
     const { contract_id, rating, comment } = req.body;
@@ -400,6 +579,34 @@ app.post('/reviews', async (req, res) => {
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
+});
+// for updating review by id
+app.put('/rev/:id', async (req, res) => {
+  const { id } = req.params; // review_id from URL
+  const { contract_id, rating, comment, review_date } = req.body;
+
+  try {
+    const result = await pool.query(
+      `UPDATE reviews
+       SET contract_id = $1,
+           rating = $2,
+           comment = $3,
+           review_date = $4
+       WHERE review_id = $5
+       RETURNING *`,
+      [contract_id, rating, comment, review_date, id]
+    );
+
+    if (result.rows.length === 0) {
+      // No row found with this review_id
+      return res.status(404).json({ message: 'Review not found' });
+    }
+
+    res.json({ message: 'Review updated successfully', review: result.rows[0] });
+  } catch (err) {
+    console.error('Error updating review:', err);
+    res.status(500).json({ error: err.message });
+  }
 });
 
 // POST /payments
@@ -415,6 +622,31 @@ app.post('/payments', async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
+// PUT /payments/:id
+// Update payment details by payment_id
+app.put('/payments/:id', async (req, res) => {
+  const { id } = req.params;
+  const { contract_id, amount, paid_on } = req.body;
+
+  try {
+    const result = await pool.query(
+      `UPDATE payments
+       SET contract_id = $1,
+           amount = $2,
+           paid_on = $3
+       WHERE payment_id = $4
+       RETURNING *`,
+      [contract_id, amount, paid_on, id]
+    );
+
+    if (result.rows.length === 0) return res.status(404).json({ message: 'Payment not found' });
+
+    res.json({ message: 'Payment updated successfully', payment: result.rows[0] });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 
 // POST /messages
 app.post('/messages', async (req, res) => {
@@ -428,6 +660,31 @@ app.post('/messages', async (req, res) => {
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
+    
+});
+// PUT /messages/:id
+// Update message content by message_id
+app.put('/messages/:id', async (req, res) => {
+  const { id } = req.params;
+  const { sender_id, receiver_id, content } = req.body;
+
+  try {
+    const result = await pool.query(
+      `UPDATE messages
+       SET sender_id = $1,
+           receiver_id = $2,
+           content = $3
+       WHERE message_id = $4
+       RETURNING *`,
+      [sender_id, receiver_id, content, id]
+    );
+
+    if (result.rows.length === 0) return res.status(404).json({ message: 'Message not found' });
+
+    res.json({ message: 'Message updated successfully', messageData: result.rows[0] });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 
