@@ -8,13 +8,14 @@ fetch(skills_URL)
     .then(data => {
         const tbody = document.querySelector("#skillsTable tbody");
 
-        data.forEach(skill => {
+        data.forEach(skills => {
             const row = document.createElement("tr");
             row.innerHTML = `
-                <td>${skill.skill_id}</td>
-                <td>${skill.name}</td>
+                <td>${skills.skill_id}</td>
+                <td>${skills.name}</td>
             `;
             tbody.appendChild(row);
         });
-    })
-    .catch(err => console.log(err.message));
+  }).catch(err=>{
+    console.log(err.message);
+})

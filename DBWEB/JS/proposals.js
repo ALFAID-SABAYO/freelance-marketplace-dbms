@@ -8,17 +8,18 @@ fetch(proposals_URL)
     .then(data => {
         const tbody = document.querySelector("#proposalsTable tbody");
 
-        data.forEach(proposal => {
+        data.forEach(proposals => {
             const row = document.createElement("tr");
             row.innerHTML = `
-                <td>${proposal.proposal_id}</td>
-                <td>${proposal.project_id}</td>
-                <td>${proposal.freelancer_id}</td>
-                <td>${proposal.bid_amount}</td>
-                <td>${proposal.message}</td>
-                <td>${proposal.submitted_at}</td>
+                <td>${proposals.proposal_id}</td>
+                <td>${proposals.project_id}</td>
+                <td>${proposals.freelancer_id}</td>
+                <td>${proposals.bid_amount}</td>
+                <td>${proposals.message}</td>
+                <td>${proposals.submitted_at}</td>
             `;
             tbody.appendChild(row);
         });
-    })
-    .catch(err => console.log(err.message));
+ }).catch(err=>{
+    console.log(err.message);
+})

@@ -8,15 +8,16 @@ fetch(payments_URL)
     .then(data => {
         const tbody = document.querySelector("#paymentsTable tbody");
 
-        data.forEach(payment => {
+        data.forEach(payments => {
             const row = document.createElement("tr");
             row.innerHTML = `
-                <td>${payment.payment_id}</td>
-                <td>${payment.contract_id}</td>
-                <td>${payment.amount}</td>
-                <td>${payment.paid_on}</td>
+                <td>${payments.payment_id}</td>
+                <td>${payments.contract_id}</td>
+                <td>${payments.amount}</td>
+                <td>${payments.paid_on}</td>
             `;
             tbody.appendChild(row);
         });
-    })
-    .catch(err => console.log(err.message));
+    }).catch(err=>{
+    console.log(err.message);
+})

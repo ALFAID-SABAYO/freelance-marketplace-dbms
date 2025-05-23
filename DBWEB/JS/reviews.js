@@ -8,16 +8,17 @@ fetch(reviews_URL)
     .then(data => {
         const tbody = document.querySelector("#reviewsTable tbody");
 
-        data.forEach(review => {
+        data.forEach(reviews => {
             const row = document.createElement("tr");
             row.innerHTML = `
-                <td>${review.review_id}</td>
-                <td>${review.contract_id}</td>
-                <td>${review.rating}</td>
-                <td>${review.comment}</td>
-                <td>${review.review_date}</td>
+                <td>${reviews.review_id}</td>
+                <td>${reviews.contract_id}</td>
+                <td>${reviews.rating}</td>
+                <td>${reviews.comment}</td>
+                <td>${reviews.review_date}</td>
             `;
             tbody.appendChild(row);
         });
-    })
-    .catch(err => console.log(err.message));
+  }).catch(err=>{
+    console.log(err.message);
+})

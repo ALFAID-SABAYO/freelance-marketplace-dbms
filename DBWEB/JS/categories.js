@@ -17,5 +17,6 @@ fetch(categories_URL)
             `;
             tbody.appendChild(row);
         });
-    })
-    .catch(err => console.log(err.message));
+    }).catch(err=>{
+    console.log(err.message);
+})

@@ -32,10 +32,170 @@
                 </tr>
             </thead>
             <tbody>
-                <!-- User rows here -->
+             
             </tbody>
         </table>
     </div>
+
+                                <!--categories-->
+
+     <div class="table-responsive">
+        <table class="table table-secondary table-bordered" id="categoriesTable">
+            <thead>
+                <tr>
+                    <th>CATEGORY ID</th>
+                    <th>NAME</th>
+                    <th>DESCRIPTION</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Category rows here -->
+            </tbody>
+        </table>
+    </div>
+                     
+                          <!--skills-->
+     <div class="table-responsive">
+        <h2>Skills</h2>
+        <table class="table table-success table-bordered">
+            <thead>
+                <tr>
+                    <th>SKILL ID</th>
+                    <th>NAME</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+
+                          <!-- Freelancer_Skills Table -->
+    <div class="table-responsive">
+        <h2>Freelancer Skills</h2>
+        <table class="table table-info table-bordered">
+            <thead>
+                <tr>
+                    <th>USER ID</th>
+                    <th>SKILL ID</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+
+                                 <!-- Projects Table -->
+    <div class="table-responsive">
+        <h2>Projects</h2>
+        <table class="table table-warning table-bordered">
+            <thead>
+                <tr>
+                    <th>PROJECT ID</th>
+                    <th>CLIENT ID</th>
+                    <th>TITLE</th>
+                    <th>DESCRIPTION</th>
+                    <th>CATEGORY ID</th>
+                    <th>BUDGET</th>
+                    <th>POSTED AT</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+
+
+     <!-- Proposals Table -->
+    <div class="table-responsive">
+        <h2>Proposals</h2>
+        <table class="table table-danger table-bordered">
+            <thead>
+                <tr>
+                    <th>PROPOSAL ID</th>
+                    <th>PROJECT ID</th>
+                    <th>FREELANCER ID</th>
+                    <th>BID AMOUNT</th>
+                    <th>MESSAGE</th>
+                    <th>SUBMITTED AT</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Contracts Table -->
+    <div class="table-responsive">
+        <h2>Contracts</h2>
+        <table class="table table-dark table-bordered">
+            <thead>
+                <tr>
+                    <th>CONTRACT ID</th>
+                    <th>PROJECT ID</th>
+                    <th>FREELANCER ID</th>
+                    <th>START DATE</th>
+                    <th>END DATE</th>
+                    <th>STATUS</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Reviews Table -->
+    <div class="table-responsive">
+        <h2>Reviews</h2>
+        <table class="table table-light table-bordered">
+            <thead>
+                <tr>
+                    <th>REVIEW ID</th>
+                    <th>CONTRACT ID</th>
+                    <th>RATING</th>
+                    <th>COMMENT</th>
+                    <th>REVIEW DATE</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Payments Table -->
+    <div class="table-responsive">
+        <h2>Payments</h2>
+        <table class="table table-secondary table-bordered">
+            <thead>
+                <tr>
+                    <th>PAYMENT ID</th>
+                    <th>CONTRACT ID</th>
+                    <th>AMOUNT</th>
+                    <th>PAID ON</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Messages Table -->
+    <div class="table-responsive">
+        <h2>Messages</h2>
+        <table class="table table-primary table-bordered">
+            <thead>
+                <tr>
+                    <th>MESSAGE ID</th>
+                    <th>SENDER ID</th>
+                    <th>RECEIVER ID</th>
+                    <th>CONTENT</th>
+                    <th>SENT AT</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+
 
     <script
         src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
@@ -47,3 +207,15 @@
     ></script>
 </body>
 </html>
+
+
+<script src="JS/users.js"></script>
+<script src="JS/categories.js"></script>
+<script src="JS/skills.js"></script>
+<script src="JS/freelancer_skills.js"></script>
+<script src="JS/projects.js"></script>
+<script src="JS/proposals.js"></script>
+<script src="JS/contracts.js"></script>
+<script src="JS/reviews.js"></script>
+<script src="JS/payments.js"></script>
+<script src="JS/messages.js"></script>

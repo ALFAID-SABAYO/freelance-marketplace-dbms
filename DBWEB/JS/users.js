@@ -8,18 +8,19 @@ fetch(users_URL)
     .then(data => {
         const tbody = document.querySelector("#usersTable tbody");
 
-        data.forEach(user => {
+        data.forEach(users => {
             const row = document.createElement("tr");
             row.innerHTML = `
-                <td>${user.user_id}</td>
-                <td>${user.username}</td>
-                <td>${user.email}</td>
-                <td>${user.password}</td>
-                <td>${user.full_name}</td>
-                <td>${user.user_type}</td>
-                <td>${user.created_at}</td>
+                <td>${users.user_id}</td>
+                <td>${users.username}</td>
+                <td>${users.email}</td>
+                <td>${users.password}</td>
+                <td>${users.full_name}</td>
+                <td>${users.user_type}</td>
+                <td>${users.created_at}</td>
             `;
             tbody.appendChild(row);
         });
-    })
-    .catch(err => console.log(err.message));
+    }).catch(err=>{
+    console.log(err.message);
+})

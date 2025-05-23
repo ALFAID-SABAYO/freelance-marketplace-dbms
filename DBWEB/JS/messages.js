@@ -8,16 +8,17 @@ fetch(messages_URL)
     .then(data => {
         const tbody = document.querySelector("#messagesTable tbody");
 
-        data.forEach(message => {
+        data.forEach(messages => {
             const row = document.createElement("tr");
             row.innerHTML = `
-                <td>${message.message_id}</td>
-                <td>${message.sender_id}</td>
-                <td>${message.receiver_id}</td>
-                <td>${message.content}</td>
-                <td>${message.sent_at}</td>
+                <td>${messages.message_id}</td>
+                <td>${messages.sender_id}</td>
+                <td>${messages.receiver_id}</td>
+                <td>${messages.content}</td>
+                <td>${messages.sent_at}</td>
             `;
             tbody.appendChild(row);
         });
-    })
-    .catch(err => console.log(err.message));
+   }).catch(err=>{
+    console.log(err.message);
+})
