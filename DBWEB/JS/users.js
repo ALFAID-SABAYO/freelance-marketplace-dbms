@@ -1,3 +1,4 @@
+
 const users_URL = "https://miniature-computing-machine-v6rgxgqx6wg2xj96-5249.app.github.dev/user"; // GET
 const post_URL = "https://miniature-computing-machine-v6rgxgqx6wg2xj96-5249.app.github.dev/users"; // POST
 const put_URL = "https://miniature-computing-machine-v6rgxgqx6wg2xj96-5249.app.github.dev/users"; // PUT URL
@@ -87,7 +88,7 @@ function showForm(mode) {
   document.getElementById("userForm").dataset.mode = mode;
   document.getElementById("formSection").style.display = "block";
    if (mode === "insert") {
-    categoryForm.reset();
+    document.getElementById("userForm").reset(); // <-- FIXED
     document.getElementById("user_id").disabled = false;
   } else {
     document.getElementById("user_id").disabled = true;
@@ -164,8 +165,3 @@ document.getElementById("userForm").addEventListener("submit", function (e) {
       });
   }
 });
-// Cancel button to hide form
-// document.getElementById("cancelBtn").addEventListener("click", () => {
-//   document.getElementById("userForm").reset();
-//   document.getElementById("formSection").style.display = "none";
-// });
