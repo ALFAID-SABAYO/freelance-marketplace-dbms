@@ -1,15 +1,17 @@
-
-const users_URL = "https://miniature-computing-machine-v6rgxgqx6wg2xj96-5249.app.github.dev/user"; // GET
-const post_URL = "https://miniature-computing-machine-v6rgxgqx6wg2xj96-5249.app.github.dev/users"; // POST
-const put_URL = "https://miniature-computing-machine-v6rgxgqx6wg2xj96-5249.app.github.dev/users"; // PUT URL
+const users_URL = "https://miniature-computing-machine-v6rgxgqx6wg2xj96-5249.app.github.dev/user"; // GET all users
+const post_URL = "https://miniature-computing-machine-v6rgxgqx6wg2xj96-5249.app.github.dev/users"; // POST new user
+const put_URL = "https://miniature-computing-machine-v6rgxgqx6wg2xj96-5249.app.github.dev/users"; // PUT update user
 
 let usersData = [];
 
 const tbody = document.querySelector("#usersTable tbody");
+const formSection = document.getElementById("formSection");
+const userForm = document.getElementById("userForm");
 
-// Render table rows
+// Render users table
 function renderTable() {
   tbody.innerHTML = "";
+
   usersData.forEach((user, index) => {
     const tr = document.createElement("tr");
     tr.innerHTML = `
@@ -25,7 +27,7 @@ function renderTable() {
       <td>${user.user_type}</td>
       <td>${user.created_at}</td>
       <td>
-       const <button class="btn btn-sm btn-warning upgrade-btn" data-id="${user.user_id}">✏️</button>
+        <button class="btn btn-sm btn-warning upgrade-btn" data-id="${user.user_id}">✏️</button>
       </td>
     `;
     tbody.appendChild(tr);
@@ -33,24 +35,24 @@ function renderTable() {
 
   // Toggle password visibility
   document.querySelectorAll(".toggle-btn").forEach(btn => {
-    btn.addEventListener("click", function () {
-      const index = this.dataset.index;
+    btn.addEventListener("click", () => {
+      const index = btn.dataset.index;
       const span = document.getElementById(`pwd-${index}`);
-      const actualPassword = this.dataset.password;
+      const actualPassword = btn.dataset.password;
 
       if (span.innerText === "********") {
         span.innerText = actualPassword;
-        this.innerText = "🙈";
-        this.title = "Hide Password";
+        btn.innerText = "🙈";
+        btn.title = "Hide Password";
       } else {
         span.innerText = "********";
-        this.innerText = "👁️";
-        this.title = "Show Password";
+        btn.innerText = "👁️";
+        btn.title = "Show Password";
       }
     });
   });
 
-  // Upgrade button logic
+  // Upgrade button click event
   document.querySelectorAll(".upgrade-btn").forEach(btn => {
     btn.addEventListener("click", () => {
       const id = btn.dataset.id;
@@ -58,8 +60,7 @@ function renderTable() {
       if (!user) return;
 
       showForm("upgrade");
-
-      // Fill form with existing data
+      // Fill form with user data
       document.getElementById("user_id").value = user.user_id;
       document.getElementById("username").value = user.username;
       document.getElementById("email").value = user.email;
@@ -70,58 +71,77 @@ function renderTable() {
   });
 }
 
-// Initial fetch
-fetch(users_URL)
-  .then(res => {
-    if (!res.ok) throw new Error("Failed to fetch Users Data");
-    return res.json();
-  })
-  .then(data => {
-    usersData = data;
-    renderTable();
-  })
-  .catch(err => console.error(err.message));
+// Fetch all users on page load
+function fetchUsers() {
+  fetch(users_URL)
+    .then(res => {
+      if (!res.ok) throw new Error("Failed to fetch users");
+      return res.json();
+    })
+    .then(data => {
+      usersData = data;
+      renderTable();
+    })
+    .catch(err => console.error(err.message));
+}
+fetchUsers();
 
-// Show Insert/Upgrade form
+// Show form for insert or upgrade
 function showForm(mode) {
+  formSection.classList.remove("d-none");
   document.getElementById("formTitle").innerText = mode === "insert" ? "Insert User" : "Upgrade User";
-  document.getElementById("userForm").dataset.mode = mode;
-  document.getElementById("formSection").style.display = "block";
-   if (mode === "insert") {
-    document.getElementById("userForm").reset(); // <-- FIXED
+  userForm.dataset.mode = mode;
+
+  if (mode === "insert") {
+    userForm.reset();
     document.getElementById("user_id").disabled = false;
   } else {
     document.getElementById("user_id").disabled = true;
   }
 }
 
+// Hide form and reset
+function hideForm() {
+  userForm.reset();
+  formSection.classList.add("d-none");
+}
+
+// Insert button event — assumes your HTML button calls this
+document.querySelector("button.btn-success")?.addEventListener("click", () => {
+  showForm("insert");
+});
 
 // Form submit handler
-document.getElementById("userForm").addEventListener("submit", function (e) {
+userForm.addEventListener("submit", e => {
   e.preventDefault();
 
-  const mode = this.dataset.mode;
+  const mode = userForm.dataset.mode;
   const id = document.getElementById("user_id").value.trim();
   const username = document.getElementById("username").value.trim();
   const email = document.getElementById("email").value.trim();
   const password = document.getElementById("password").value.trim();
   const full_name = document.getElementById("full_name").value.trim();
   const user_type = document.getElementById("user_type").value.trim();
-  const created_at = new Date().toISOString().split("T")[0];
+  const created_at = new Date().toISOString().split("T")[0]; // Format: YYYY-MM-DD
 
-  const updatedUser = { user_id: id, username, email, password, full_name, user_type, created_at };
+  if (!id || !username || !email || !password || !full_name || !user_type) {
+    alert("⚠️ All fields are required.");
+    return;
+  }
 
   if (mode === "insert") {
-    const exists = usersData.some(u => u.user_id == id);
-    if (exists) {
+    // Check duplicate ID
+    if (usersData.some(u => u.user_id == id)) {
       alert("⚠️ User ID already exists! Please use a different one.");
       return;
     }
-//-------------------------------------------------------   POST /user--------------------------------------//
+
+    const newUser = { user_id: id, username, email, password, full_name, user_type, created_at };
+
     fetch(post_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(updatedUser),
+      body: JSON.stringify(newUser),
     })
       .then(res => {
         if (!res.ok) throw new Error("Failed to insert user.");
@@ -130,18 +150,17 @@ document.getElementById("userForm").addEventListener("submit", function (e) {
       .then(addedUser => {
         usersData.push(addedUser);
         renderTable();
+        hideForm();
         alert("✅ New user inserted!");
-        document.getElementById("userForm").reset();
-        document.getElementById("formSection").style.display = "none";
       })
       .catch(err => {
         console.error(err);
         alert("❌ Failed to insert user.");
       });
-  }
-//-------------------------------------------------------   PUT /user/:id--------------------------------------//
-  if (mode === "upgrade") {
-    fetch(`${put_URL}/${id}`, {  // Correct URL without ':id'
+  } else if (mode === "upgrade") {
+    const updatedUser = { user_id: id, username, email, password, full_name, user_type, created_at };
+
+    fetch(`${put_URL}/${id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(updatedUser),
@@ -150,18 +169,21 @@ document.getElementById("userForm").addEventListener("submit", function (e) {
         if (!res.ok) throw new Error("Failed to update user.");
         return res.json();
       })
-      .then(() => {
+      .then(updated => {
+        // Update local usersData
         const index = usersData.findIndex(u => u.user_id == id);
-        if (index !== -1) usersData[index] = updatedUser;
+        if (index !== -1) usersData[index] = updated;
 
         renderTable();
+        hideForm();
         alert("✅ User upgraded successfully!");
-        document.getElementById("userForm").reset();
-        document.getElementById("formSection").style.display = "none";
       })
       .catch(err => {
         console.error(err);
         alert("❌ Failed to upgrade user.");
       });
   }
+});
+document.querySelector("button.btn-success")?.addEventListener("click", () => {
+  showForm("insert");
 });

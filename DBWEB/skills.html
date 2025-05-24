@@ -1,21 +1,32 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <title>Skills Table</title>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-
-    <link
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-        rel="stylesheet"
-        crossorigin="anonymous"
-    />
-    <style>
-        body { padding: 20px; }
-        table thead th { text-transform: uppercase; }
-    </style>
+  <title>Users Table</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  
+  <!-- Bootstrap CSS -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+    crossorigin="anonymous"
+  />
+  
+  <!-- Your external CSS -->
+  <link rel="stylesheet" href="CSS/STYLE.CSS" />
 </head>
 <body>
+  <div class="container">
+
+    <!-- Top Buttons -->
+    <div class="mb-4 d-flex justify-content-between align-items-center">
+      <button class="btn btn-secondary" onclick="location.href='index.html'">🏠 Home</button>
+      <div>
+        <button class="btn btn-success me-2" onclick="showForm('insert')">➕ Insert</button>
+      </div>
+    </div>
+
+    
     <div class="table-responsive">
         <table class="table table-success table-bordered" id="skillsTable">
             <thead>
@@ -29,7 +40,23 @@
             </tbody>
         </table>
     </div>
-
+  <!-- Form Section -->
+    <div id="formSection" class="card p-4 bg-light">
+      <h5 id="formTitle">Insert Skill</h5>
+      <form id="skillForm" novalidate>
+        <div class="row">
+          <div class="col-md-4 mb-3">
+            <input type="text" id="skill_id" class="form-control" placeholder="Skill ID" required />
+          </div>
+          <div class="col-md-4 mb-3">
+            <input type="text" id="name" class="form-control" placeholder="Skill Name" required />
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary">💾 Submit</button>
+      </form>
+    </div>
+  </div>
+ 
     <script
         src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
         crossorigin="anonymous"

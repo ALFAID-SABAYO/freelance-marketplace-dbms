@@ -92,7 +92,7 @@ categoryForm.addEventListener("submit", function (e) {
     ? { category_id: id, name, description }
     : { name, description };
 
-  const url = mode === "insert" ? post_URL : `${put_URL}/${id}`;
+  const url = mode === "insert" ? post_URL : `${put_URL}/${id}`;// checking to get the correct URL 
   const method = mode === "insert" ? "POST" : "PUT";
 
   fetch(url, {
