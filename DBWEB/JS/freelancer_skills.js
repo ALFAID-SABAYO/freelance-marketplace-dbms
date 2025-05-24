@@ -7,7 +7,6 @@ fetch(freelancerSkills_URL)
     })
     .then(data => {
         const tbody = document.querySelector("#freelancerSkillsTable tbody");
-
         data.forEach(fs => {
             const row = document.createElement("tr");
             row.innerHTML = `
@@ -16,6 +15,7 @@ fetch(freelancerSkills_URL)
             `;
             tbody.appendChild(row);
         });
-   }).catch(err=>{
-    console.log(err.message);
-})
+    })
+    .catch(err => {
+        console.error("Error fetching data:", err.message);
+    });

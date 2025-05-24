@@ -1,4 +1,152 @@
-<!doctype html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Freelance Marketplace Platform</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap');
+
+    body {
+      background: linear-gradient(135deg, #002d72, #004aad, #0059d9);
+      min-height: 100vh;
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #c7d3ff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 50px 20px 80px;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    .logo-container {
+      width: 130px;
+      height: 130px;
+      margin-bottom: 25px;
+      border-radius: 50%;
+      overflow: hidden;
+      background: rgba(255 255 255 / 0.12);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4), inset 0 0 10px rgba(255 255 255 / 0.25);
+      backdrop-filter: blur(12px);
+      border: 1.8px solid rgba(255 255 255 / 0.3);
+    }
+    .logo-container img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      filter: drop-shadow(0 0 5px rgba(255 255 255 / 0.4));
+    }
+
+    h1 {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 600;
+      font-size: 3.2rem;
+      margin-bottom: 50px;
+      text-align: center;
+      color: #a9c4ff;
+      text-shadow: 0 0 12px #4a7bff, 0 0 25px #3f6aff;
+      letter-spacing: 2px;
+    }
+
+    .container-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+      max-width: 900px;
+      width: 100%;
+      padding: 35px;
+      border-radius: 20px;
+      background: rgba(255 255 255 / 0.09);
+      box-shadow: 0 8px 36px rgba(18, 44, 91, 0.6);
+      backdrop-filter: blur(18px);
+      border: 1.5px solid rgba(255 255 255 / 0.22);
+    }
+
+    .btn-table {
+      min-width: 160px;
+      padding: 13px 0;
+      font-weight: 600;
+      border-radius: 15px;
+      border: 1.7px solid rgba(255 255 255 / 0.45);
+      background: linear-gradient(145deg, rgba(255 255 255 / 0.22), rgba(255 255 255 / 0.1));
+      color: #d2dfff;
+      box-shadow: 0 5px 15px rgba(255 255 255 / 0.22), inset 0 0 10px rgba(255 255 255 / 0.4);
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      text-align: center;
+      font-size: 0.95rem;
+      text-decoration: none;
+    }
+
+    .btn-table:hover {
+      background: linear-gradient(145deg, rgba(255 255 255 / 0.45), rgba(255 255 255 / 0.22));
+      box-shadow: 0 10px 25px rgba(0, 123, 255, 0.75), inset 0 0 18px rgba(255 255 255 / 0.6);
+      color: #fff;
+      transform: translateY(-3px);
+    }
+
+    footer {
+      width: 100%;
+      max-width: 900px;
+      text-align: center;
+      font-size: 0.9rem;
+      color: #a2b1ff;
+      padding: 12px 0 6px;
+      letter-spacing: 0.5px;
+      text-shadow: 0 0 6px rgba(64, 94, 255, 0.4);
+    }
+
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 2.2rem;
+      }
+      .btn-table {
+        min-width: 140px;
+        font-size: 0.9rem;
+      }
+      .logo-container {
+        width: 100px;
+        height: 100px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="logo-container" title="Project Logo">
+    <img src="logo.png" alt="Project Logo" />
+  </div>
+
+  <h1>Freelance Marketplace Platform</h1>
+
+  <div class="container-buttons">
+    <a href="users.html" class="btn-table">Users</a>
+    <a href="categories.html" class="btn-table">Categories</a>
+    <a href="skills.html" class="btn-table">Skills</a>
+    <a href="freelancer_skills.html" class="btn-table">Freelancer Skills</a>
+    <a href="projects.html" class="btn-table">Projects</a>
+    <a href="proposals.html" class="btn-table">Proposals</a>
+    <a href="contracts.html" class="btn-table">Contracts</a>
+    <a href="reviews.html" class="btn-table">Reviews</a>
+    <a href="payments.html" class="btn-table">Payments</a>
+    <a href="messages.html" class="btn-table">Messages</a>
+  </div>
+
+  <footer>
+    &copy; 2025 | Created by Sarim Ayubi (2312132) &amp; Alfaid (2312119)
+  </footer>
+
+</body>
+</html>
+
+
+<!--<!doctype html>
 <html lang="en">
 <head>
     <title>Freelancers Marketplace Tables</title>
@@ -12,7 +160,7 @@
 </head>
 <body>
     <div class="container">
-        <!-- Users Table -->
+        <!-- Users Table 
         <h2>Users</h2>
         <div class="table-responsive">
             <table class="table table-primary table-bordered" id="usersTable">
@@ -31,7 +179,7 @@
             </table>
         </div>
 
-        <!-- Categories Table -->
+        <!-- Categories Table
         <h2>Categories</h2>
         <div class="table-responsive">
             <table class="table table-secondary table-bordered" id="categoriesTable">
@@ -46,7 +194,7 @@
             </table>
         </div>
 
-        <!-- Skills Table -->
+        <!-- Skills Table 
         <h2>Skills</h2>
         <div class="table-responsive">
             <table class="table table-success table-bordered" id="skillsTable">
@@ -60,7 +208,7 @@
             </table>
         </div>
 
-        <!-- Freelancer Skills Table -->
+        <!-- Freelancer Skills Table 
         <h2>Freelancer Skills</h2>
         <div class="table-responsive">
             <table class="table table-info table-bordered" id="freelancerSkillsTable">
@@ -74,7 +222,7 @@
             </table>
         </div>
 
-        <!-- Projects Table -->
+        <!-- Projects Table 
         <h2>Projects</h2>
         <div class="table-responsive">
             <table class="table table-warning table-bordered" id="projectsTable">
@@ -93,7 +241,7 @@
             </table>
         </div>
 
-        <!-- Proposals Table -->
+        <!-- Proposals Table 
         <h2>Proposals</h2>
         <div class="table-responsive">
             <table class="table table-danger table-bordered" id="proposalsTable">
@@ -111,7 +259,7 @@
             </table>
         </div>
 
-        <!-- Contracts Table -->
+        <!-- Contracts Table 
         <h2>Contracts</h2>
         <div class="table-responsive">
             <table class="table table-dark table-bordered" id="contractsTable">
@@ -129,7 +277,7 @@
             </table>
         </div>
 
-        <!-- Reviews Table -->
+        <!-- Reviews Table 
         <h2>Reviews</h2>
         <div class="table-responsive">
             <table class="table table-light table-bordered" id="reviewsTable">
@@ -146,7 +294,7 @@
             </table>
         </div>
 
-        <!-- Payments Table -->
+        <!-- Payments Table 
         <h2>Payments</h2>
         <div class="table-responsive">
             <table class="table table-secondary table-bordered" id="paymentsTable">
@@ -162,7 +310,7 @@
             </table>
         </div>
 
-        <!-- Messages Table -->
+        <!-- Messages Table 
         <h2>Messages</h2>
         <div class="table-responsive">
             <table class="table table-primary table-bordered" id="messagesTable">
@@ -182,7 +330,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
 
-    <!-- External JS Files -->
+    <!-- External JS Files 
     <script src="JS/users.js"></script>
     <script src="JS/categories.js"></script>
     <script src="JS/skills.js"></script>
@@ -194,4 +342,203 @@
     <script src="JS/payments.js"></script>
     <script src="JS/messages.js"></script>
 </body>
-</html>
+</html>-->
+
+
+<!--<!doctype html>
+<html lang="en">
+<head>
+    <title>Freelancers Marketplace Tables</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+    <style>
+        body { padding: 20px; }
+        table thead th { text-transform: uppercase; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Users Table 
+        <h2>Users</h2>
+        <div class="table-responsive">
+            <table class="table table-primary table-bordered" id="usersTable">
+                <thead>
+                    <tr>
+                        <th>USER ID</th>
+                        <th>USERNAME</th>
+                        <th>EMAIL</th>
+                        <th>PASSWORD</th>
+                        <th>FULL NAME</th>
+                        <th>USER TYPE</th>
+                        <th>CREATED AT</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <!-- Categories Table
+        <h2>Categories</h2>
+        <div class="table-responsive">
+            <table class="table table-secondary table-bordered" id="categoriesTable">
+                <thead>
+                    <tr>
+                        <th>CATEGORY ID</th>
+                        <th>NAME</th>
+                        <th>DESCRIPTION</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <!-- Skills Table 
+        <h2>Skills</h2>
+        <div class="table-responsive">
+            <table class="table table-success table-bordered" id="skillsTable">
+                <thead>
+                    <tr>
+                        <th>SKILL ID</th>
+                        <th>NAME</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <!-- Freelancer Skills Table 
+        <h2>Freelancer Skills</h2>
+        <div class="table-responsive">
+            <table class="table table-info table-bordered" id="freelancerSkillsTable">
+                <thead>
+                    <tr>
+                        <th>USER ID</th>
+                        <th>SKILL ID</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <!-- Projects Table 
+        <h2>Projects</h2>
+        <div class="table-responsive">
+            <table class="table table-warning table-bordered" id="projectsTable">
+                <thead>
+                    <tr>
+                        <th>PROJECT ID</th>
+                        <th>CLIENT ID</th>
+                        <th>TITLE</th>
+                        <th>DESCRIPTION</th>
+                        <th>CATEGORY ID</th>
+                        <th>BUDGET</th>
+                        <th>POSTED AT</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <!-- Proposals Table 
+        <h2>Proposals</h2>
+        <div class="table-responsive">
+            <table class="table table-danger table-bordered" id="proposalsTable">
+                <thead>
+                    <tr>
+                        <th>PROPOSAL ID</th>
+                        <th>PROJECT ID</th>
+                        <th>FREELANCER ID</th>
+                        <th>BID AMOUNT</th>
+                        <th>MESSAGE</th>
+                        <th>SUBMITTED AT</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <!-- Contracts Table 
+        <h2>Contracts</h2>
+        <div class="table-responsive">
+            <table class="table table-dark table-bordered" id="contractsTable">
+                <thead>
+                    <tr>
+                        <th>CONTRACT ID</th>
+                        <th>PROJECT ID</th>
+                        <th>FREELANCER ID</th>
+                        <th>START DATE</th>
+                        <th>END DATE</th>
+                        <th>STATUS</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <!-- Reviews Table 
+        <h2>Reviews</h2>
+        <div class="table-responsive">
+            <table class="table table-light table-bordered" id="reviewsTable">
+                <thead>
+                    <tr>
+                        <th>REVIEW ID</th>
+                        <th>CONTRACT ID</th>
+                        <th>RATING</th>
+                        <th>COMMENT</th>
+                        <th>REVIEW DATE</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <!-- Payments Table 
+        <h2>Payments</h2>
+        <div class="table-responsive">
+            <table class="table table-secondary table-bordered" id="paymentsTable">
+                <thead>
+                    <tr>
+                        <th>PAYMENT ID</th>
+                        <th>CONTRACT ID</th>
+                        <th>AMOUNT</th>
+                        <th>PAID ON</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <!-- Messages Table 
+        <h2>Messages</h2>
+        <div class="table-responsive">
+            <table class="table table-primary table-bordered" id="messagesTable">
+                <thead>
+                    <tr>
+                        <th>MESSAGE ID</th>
+                        <th>SENDER ID</th>
+                        <th>RECEIVER ID</th>
+                        <th>CONTENT</th>
+                        <th>SENT AT</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+
+    <!-- External JS Files 
+    <script src="JS/users.js"></script>
+    <script src="JS/categories.js"></script>
+    <script src="JS/skills.js"></script>
+    <script src="JS/freelancer_skills.js"></script>
+    <script src="JS/projects.js"></script>
+    <script src="JS/proposals.js"></script>
+    <script src="JS/contracts.js"></script>
+    <script src="JS/reviews.js"></script>
+    <script src="JS/payments.js"></script>
+    <script src="JS/messages.js"></script>
+</body>
+</html>-->
