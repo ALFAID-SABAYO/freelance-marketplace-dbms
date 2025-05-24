@@ -1,6 +1,6 @@
 const users_URL = "https://miniature-computing-machine-v6rgxgqx6wg2xj96-5249.app.github.dev/user"; // GET
 const post_URL = "https://miniature-computing-machine-v6rgxgqx6wg2xj96-5249.app.github.dev/users"; // POST
-const put_URL = "https://miniature-computing-machine-v6rgxgqx6wg2xj96-5249.app.github.dev/users"; // PUT base URL (no :id)
+const put_URL = "https://miniature-computing-machine-v6rgxgqx6wg2xj96-5249.app.github.dev/users"; // PUT URL
 
 let usersData = [];
 
@@ -24,7 +24,7 @@ function renderTable() {
       <td>${user.user_type}</td>
       <td>${user.created_at}</td>
       <td>
-        <button class="btn btn-sm btn-warning upgrade-btn" data-id="${user.user_id}">✏️</button>
+       const <button class="btn btn-sm btn-warning upgrade-btn" data-id="${user.user_id}">✏️</button>
       </td>
     `;
     tbody.appendChild(tr);
@@ -86,7 +86,14 @@ function showForm(mode) {
   document.getElementById("formTitle").innerText = mode === "insert" ? "Insert User" : "Upgrade User";
   document.getElementById("userForm").dataset.mode = mode;
   document.getElementById("formSection").style.display = "block";
+   if (mode === "insert") {
+    categoryForm.reset();
+    document.getElementById("user_id").disabled = false;
+  } else {
+    document.getElementById("user_id").disabled = true;
+  }
 }
+
 
 // Form submit handler
 document.getElementById("userForm").addEventListener("submit", function (e) {
@@ -158,7 +165,7 @@ document.getElementById("userForm").addEventListener("submit", function (e) {
   }
 });
 // Cancel button to hide form
-document.getElementById("cancelBtn").addEventListener("click", () => {
-  document.getElementById("userForm").reset();
-  document.getElementById("formSection").style.display = "none";
-});
+// document.getElementById("cancelBtn").addEventListener("click", () => {
+//   document.getElementById("userForm").reset();
+//   document.getElementById("formSection").style.display = "none";
+// });

@@ -1,12 +1,14 @@
-const Categories_URL = "https://miniature-computing-machine-v6rgxgqx6wg2xj96-5249.app.github.dev/cat";       // GET
-const post_URL = "https://miniature-computing-machine-v6rgxgqx6wg2xj96-5249.app.github.dev/categories";  // POST base
-const put_URL = "https://miniature-computing-machine-v6rgxgqx6wg2xj96-5249.app.github.dev/categories";   // PUT base (with :id appended)
+const Categories_URL = "https://miniature-computing-machine-v6rgxgqx6wg2xj96-5249.app.github.dev/cat";
+const post_URL = "https://miniature-computing-machine-v6rgxgqx6wg2xj96-5249.app.github.dev/categories";
+const put_URL = "https://miniature-computing-machine-v6rgxgqx6wg2xj96-5249.app.github.dev/categories";
 
 let categoriesData = [];
 
 const tbody = document.querySelector("#categoriesTable tbody");
+const formSection = document.getElementById("formSection");
+const categoryForm = document.getElementById("categoryForm");
 
-// Render categories table rows
+// Render categories in the table
 function renderTable() {
   tbody.innerHTML = "";
   categoriesData.forEach((category) => {
@@ -22,7 +24,7 @@ function renderTable() {
     tbody.appendChild(tr);
   });
 
-  // Attach event listeners to upgrade buttons
+  // Add click events to Upgrade buttons
   document.querySelectorAll(".upgrade-btn").forEach(btn => {
     btn.addEventListener("click", () => {
       const id = btn.dataset.id;
@@ -30,8 +32,6 @@ function renderTable() {
       if (!category) return;
 
       showForm("upgrade");
-
-      // Fill form with existing data
       document.getElementById("category_id").value = category.category_id;
       document.getElementById("name").value = category.name;
       document.getElementById("description").value = category.description;
@@ -39,105 +39,90 @@ function renderTable() {
   });
 }
 
-// Initial fetch categories data (GET /cat)
-fetch(Categories_URL)
-  .then(res => {
-    if (!res.ok) throw new Error("Failed to fetch categories data");
-    return res.json();
-  })
-  .then(data => {
-    categoriesData = data;
-    renderTable();
-  })
-  .catch(err => console.error(err.message));
-
-// Show Insert/Upgrade form
-function showForm(mode) {
-  document.getElementById("formTitle").innerText = mode === "insert" ? "Insert Category" : "Upgrade Category";
-  document.getElementById("categoryForm").dataset.mode = mode;
-  document.getElementById("formSection").style.display = "block";
+// Fetch all categories on page load
+function fetchCategories() {
+  fetch(Categories_URL)
+    .then(res => {
+      if (!res.ok) throw new Error("Failed to fetch categories");
+      return res.json();
+    })
+    .then(data => {
+      categoriesData = data;
+      renderTable();
+    })
+    .catch(err => console.error(err.message));
 }
 
-// Hide form initially
-document.getElementById("formSection").style.display = "none";
+fetchCategories();
 
-// Cancel button to hide form
-document.getElementById("cancelBtn").addEventListener("click", () => {
-  document.getElementById("categoryForm").reset();
-  document.getElementById("formSection").style.display = "none";
-});
+// Show form for insert or upgrade
+function showForm(mode) {
+  formSection.classList.remove("d-none");
+  document.getElementById("formTitle").innerText = mode === "insert" ? "Insert Category" : "Upgrade Category";
+  categoryForm.dataset.mode = mode;
 
-// Form submit handler
-document.getElementById("categoryForm").addEventListener("submit", function (e) {
+  if (mode === "insert") {
+    categoryForm.reset();
+    document.getElementById("category_id").disabled = false;
+  } else {
+    document.getElementById("category_id").disabled = true;
+  }
+}
+
+// Hide form and reset
+function hideForm() {
+  categoryForm.reset();
+  formSection.classList.add("d-none");
+}
+
+// Handle form submit
+categoryForm.addEventListener("submit", function (e) {
   e.preventDefault();
-
   const mode = this.dataset.mode;
   const id = document.getElementById("category_id").value.trim();
   const name = document.getElementById("name").value.trim();
   const description = document.getElementById("description").value.trim();
 
-  if (!name) {
-    alert("⚠️ Name is required");
+  if (!id || !name || !description) {
+    alert("⚠️ All fields are required.");
     return;
   }
 
-  const updatedCategory = { name, description };
+  const requestBody = mode === "insert"
+    ? { category_id: id, name, description }
+    : { name, description };
 
-  if (mode === "insert") {
-    //--------------------------------------------------------- POST /categories ---------------------------------------------------------//
-    fetch(post_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(updatedCategory),
+  const url = mode === "insert" ? post_URL : `${put_URL}/${id}`;
+  const method = mode === "insert" ? "POST" : "PUT";
+
+  fetch(url, {
+    method,
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(requestBody),
+  })
+    .then(res => {
+      if (!res.ok) throw new Error(`Failed to ${mode} category.`);
+      return res.json();
     })
-      .then(res => {
-        if (!res.ok) throw new Error("Failed to insert category.");
-        return res.json();
-      })
-      .then(newCategory => {
-        categoriesData.push(newCategory);
-        renderTable();
-        alert("✅ New category inserted!");
-        document.getElementById("categoryForm").reset();
-        document.getElementById("formSection").style.display = "none";
-      })
-      .catch(err => {
-        console.error(err);
-        alert("❌ Failed to insert category.");
-      });
-
-    }
-
-     if (mode === "upgrade") {
-    //------------------------------------------------------------------------ PUT /categories/:id   ------------------------------------------------------------------------ //
-    fetch(`${put_URL}/${id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(updatedCategory),
-    })
-      .then(res => {
-        if (!res.ok) throw new Error("Failed to update category.");
-        return res.json();
-      })
-      .then(result => {
-        // result should contain updated category info (like your PUT API)
+    .then(response => {
+      if (mode === "insert") {
+        categoriesData.push(response);
+        alert("✅ Category inserted!");
+      } else {
         const index = categoriesData.findIndex(c => c.category_id == id);
-        if (index !== -1) categoriesData[index] = updatedCategory ;
-
-        renderTable();
-        alert("✅ Category upgraded successfully!");
-        document.getElementById("categoryForm").reset();
-        document.getElementById("formSection").style.display = "none";
-      })
-      .catch(err => {
-        console.error(err);
-        alert("❌ Failed to upgrade category.");
-      });
-  }
+        if (index !== -1) categoriesData[index] = response;
+        alert("✅ Category upgraded!");
+      }
+      renderTable();
+      hideForm();
+    })
+    .catch(err => {
+      console.error(err);
+      alert(`❌ Error: ${err.message}`);
+    });
 });
 
-// // Add button to open insert form
-// document.getElementById("insertCategoryBtn").addEventListener("click", () => {
-//   document.getElementById("categoryForm").reset();
-//   showForm("insert");
-// });
+// Insert button click event
+document.getElementById("insertCategoryBtn").addEventListener("click", () => {
+  showForm("insert");
+});
