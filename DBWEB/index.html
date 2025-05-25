@@ -3,144 +3,194 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Freelance Marketplace Platform</title>
+  <title>Freelance Talent Platform</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap');
+    html, body {
+      height: 100%;
+      margin: 0;
+    }
 
     body {
-      background: linear-gradient(135deg, #002d72, #004aad, #0059d9);
-      min-height: 100vh;
-      margin: 0;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      color: #c7d3ff;
+      background-color: #01272e;
+    }
+
+    .page-wrapper {
       display: flex;
       flex-direction: column;
-      align-items: center;
-      padding: 50px 20px 80px;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
+      min-height: 100vh;
     }
 
-    .logo-container {
-      width: 130px;
-      height: 130px;
-      margin-bottom: 25px;
-      border-radius: 50%;
-      overflow: hidden;
-      background: rgba(255 255 255 / 0.12);
-      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4), inset 0 0 10px rgba(255 255 255 / 0.25);
-      backdrop-filter: blur(12px);
-      border: 1.8px solid rgba(255 255 255 / 0.3);
-    }
-    .logo-container img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      filter: drop-shadow(0 0 5px rgba(255 255 255 / 0.4));
-    }
-
-    h1 {
-      font-family: 'Poppins', sans-serif;
-      font-weight: 600;
-      font-size: 3.2rem;
-      margin-bottom: 50px;
-      text-align: center;
-      color: #a9c4ff;
-      text-shadow: 0 0 12px #4a7bff, 0 0 25px #3f6aff;
-      letter-spacing: 2px;
-    }
-
-    .container-buttons {
+    /* Navbar with Logo */
+    .navbar {
+      background-color: #0d2f3f;
+      padding: 15px 30px;
       display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 20px;
-      max-width: 900px;
-      width: 100%;
-      padding: 35px;
-      border-radius: 20px;
-      background: rgba(255 255 255 / 0.09);
-      box-shadow: 0 8px 36px rgba(18, 44, 91, 0.6);
-      backdrop-filter: blur(18px);
-      border: 1.5px solid rgba(255 255 255 / 0.22);
+      align-items: center;
+      justify-content: space-between;
     }
 
-    .btn-table {
-      min-width: 160px;
-      padding: 13px 0;
-      font-weight: 600;
-      border-radius: 15px;
-      border: 1.7px solid rgba(255 255 255 / 0.45);
-      background: linear-gradient(145deg, rgba(255 255 255 / 0.22), rgba(255 255 255 / 0.1));
-      color: #d2dfff;
-      box-shadow: 0 5px 15px rgba(255 255 255 / 0.22), inset 0 0 10px rgba(255 255 255 / 0.4);
-      text-transform: uppercase;
-      letter-spacing: 1.2px;
-      transition: all 0.3s ease;
-      cursor: pointer;
-      text-align: center;
-      font-size: 0.95rem;
+    .logo {
+      color: #00d084;
+      font-size: 1.8rem;
+      font-weight: bold;
       text-decoration: none;
     }
 
-    .btn-table:hover {
-      background: linear-gradient(145deg, rgba(255 255 255 / 0.45), rgba(255 255 255 / 0.22));
-      box-shadow: 0 10px 25px rgba(0, 123, 255, 0.75), inset 0 0 18px rgba(255 255 255 / 0.6);
-      color: #fff;
-      transform: translateY(-3px);
+    /* Navbar Buttons Container */
+    .nav-buttons {
+      display: flex;
+      gap: 12px;
     }
 
-    footer {
-      width: 100%;
-      max-width: 900px;
-      text-align: center;
+    /* Navbar Buttons */
+    .nav-buttons button {
+      background: transparent;
+      border: 2px solid #00d084;
+      color: #00d084;
+      font-weight: 600;
+      padding: 6px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s ease, color 0.3s ease;
       font-size: 0.9rem;
-      color: #a2b1ff;
-      padding: 12px 0 6px;
-      letter-spacing: 0.5px;
-      text-shadow: 0 0 6px rgba(64, 94, 255, 0.4);
     }
 
-    @media (max-width: 600px) {
-      h1 {
-        font-size: 2.2rem;
-      }
-      .btn-table {
-        min-width: 140px;
-        font-size: 0.9rem;
-      }
-      .logo-container {
-        width: 100px;
-        height: 100px;
-      }
+    .nav-buttons button:hover {
+      background-color: #00d084;
+      color: #01272e;
+      border-color: #00d084;
+    }
+
+    /* Hero Section */
+    .hero {
+      background-color: #0d2f3f;
+      color: white;
+      padding: 80px 20px;
+      text-align: center;
+    }
+
+    .hero h1 {
+      font-size: 2.8rem;
+      font-weight: bold;
+    }
+
+    .hero p {
+      font-size: 1.2rem;
+      margin-top: 10px;
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .hero .subtext {
+      font-size: 1.15rem;
+      font-weight: 500;
+      color: #d1ecff;
+      margin-top: 15px;
+    }
+
+    .hero .btn {
+      margin: 20px 10px 0;
+      padding: 12px 30px;
+      font-weight: 600;
+    }
+
+    /* Tables Section */
+    .tables {
+      flex-grow: 1;               /* Make it expand vertically */
+      padding: 60px 20px;
+      background-image: url('images/modern-equipped-computer-lab.jpg');
+      background-size: cover;     /* Cover whole section */
+      background-position: center;
+      background-repeat: no-repeat;
+      color: white;
+      position: relative;         /* For overlay or layering if needed */
+      min-height: 300px;          /* Ensure it has some height if content is small */
+    }
+
+    .tables h2 {
+      text-align: center;
+      margin-bottom: 40px;
+      font-weight: 700;
+      color: #ffffff;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.6);
+    }
+
+    .table-card {
+      background-color: rgba(255, 255, 255, 0.85);
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      padding: 25px 15px;
+      text-align: center;
+      font-weight: 600;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+      transition: all 0.3s ease;
+      color: #1e1e1e;
+      text-decoration: none;
+    }
+
+    .table-card:hover {
+      box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+      transform: translateY(-5px);
+    }
+
+    .footer {
+      background-color: #0d2f3f;
+      color: white;
+      text-align: center;
+      padding: 20px 10px;
+      font-size: 0.95rem;
+      margin-top: auto;
     }
   </style>
 </head>
 <body>
+  <div class="page-wrapper">
 
-  <div class="logo-container" title="Project Logo">
-    <img src="logo.png" alt="Project Logo" />
+    <!-- Navbar -->
+    <nav class="navbar">
+      <a href="#" class="logo">WorkZone</a>
+      <div class="nav-buttons">
+        <button type="button">Search</button>
+        <button type="button">Signup</button>
+        <button type="button">Signin</button>
+        <button type="button">Help</button>
+      </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+      <h1>Connecting Freelancers & Clients.<br>Your Marketplace, Simplified.</h1>
+      <p class="subtext">From developers to designers — connect with top-tier experts in minutes.</p>
+      <p class="subtext">Build your dream team, get more done, and scale smarter — all in one place.</p>
+      <a href="#" class="btn btn-success">Get Started</a>
+      <a href="#" class="btn btn-outline-light">Watch Demo</a>
+    </section>
+
+    <!-- Tables Section -->
+    <section class="tables container-fluid">
+      <h2>Explore Platform Tables</h2>
+      <div class="row row-cols-2 row-cols-md-5 g-4 justify-content-center">
+        <div class="col"><a href="users.html" class="table-card d-block">Users</a></div>
+        <div class="col"><a href="categories.html" class="table-card d-block">Categories</a></div>
+        <div class="col"><a href="skills.html" class="table-card d-block">Skills</a></div>
+        <div class="col"><a href="freelancer_skills.html" class="table-card d-block">Freelancer Skills</a></div>
+        <div class="col"><a href="projects.html" class="table-card d-block">Projects</a></div>
+        <div class="col"><a href="proposals.html" class="table-card d-block">Proposals</a></div>
+        <div class="col"><a href="contracts.html" class="table-card d-block">Contracts</a></div>
+        <div class="col"><a href="reviews.html" class="table-card d-block">Reviews</a></div>
+        <div class="col"><a href="payments.html" class="table-card d-block">Payments</a></div>
+        <div class="col"><a href="messages.html" class="table-card d-block">Messages</a></div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      &copy; 2025 | Created by Sarim Ayubi (2312132) &amp; Alfaid (2312119)
+    </footer>
+
   </div>
-
-  <h1>Freelance Marketplace Platform</h1>
-
-  <div class="container-buttons">
-    <a href="users.html" class="btn-table">Users</a>
-    <a href="categories.html" class="btn-table">Categories</a>
-    <a href="skills.html" class="btn-table">Skills</a>
-    <a href="freelancer_skills.html" class="btn-table">Freelancer Skills</a>
-    <a href="projects.html" class="btn-table">Projects</a>
-    <a href="proposals.html" class="btn-table">Proposals</a>
-    <a href="contracts.html" class="btn-table">Contracts</a>
-    <a href="reviews.html" class="btn-table">Reviews</a>
-    <a href="payments.html" class="btn-table">Payments</a>
-    <a href="messages.html" class="btn-table">Messages</a>
-  </div>
-
-  <footer>
-    &copy; 2025 | Created by Sarim Ayubi (2312132) &amp; Alfaid (2312119)
-  </footer>
-
 </body>
 </html>

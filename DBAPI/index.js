@@ -38,14 +38,16 @@ app.get('/con', async (req, res) => {
     }
 });
 
-app.get('/fskill', async (req, res) => {
-    try {
-        const result = await pool.query('select * from freelancer_skills');
-        res.json(result.rows);
-    } catch (err) {
-        res.status(500).json({ Error: err.message });
-    }
+app.get("/fskill", async (req, res) => {
+  try {
+    const result = await pool.query("SELECT * FROM freelancer_skills");
+    res.json(result.rows);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ error: "Internal server error" });
+  }
 });
+
 
 app.get('/mess', async (req, res) => {
     try {
@@ -408,17 +410,18 @@ app.put('/skills/:id', async (req, res) => {
 
 // POST /freelancer_skills
 app.post('/freelancer_skills', async (req, res) => {
-    const { user_id, skill_id } = req.body;
-    try {
-        const result = await pool.query(
-            'INSERT INTO freelancer_skills (user_id, skill_id) VALUES ($1, $2) RETURNING *',
-            [user_id, skill_id]
-        );
-        res.json(result.rows[0]);
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
+  const { user_id, skill_id } = req.body;
+  try {
+    const result = await pool.query(
+      'INSERT INTO freelancer_skills (user_id, skill_id) VALUES ($1, $2) RETURNING *',
+      [user_id, skill_id]
+    );
+    res.json(result.rows[0]);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
+
 // PUT /freelancer_skills/:id
 // Update freelancer skill by freelancer_skill_id (if exists) or use user_id and skill_id in body
 // Assuming you have freelancer_skill_id as PK for simplicity
