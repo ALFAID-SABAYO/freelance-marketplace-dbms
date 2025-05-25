@@ -163,3 +163,6 @@ document.querySelector("button.btn-success").addEventListener("click", () => {
 // Initialize
 hideForm();
 fetchFreelancerSkills();
+document.getElementById("cancelFormBtn").addEventListener("click", function () {
+  document.getElementById("formSection").classList.add("d-none");
+});

@@ -126,3 +126,6 @@ categoryForm.addEventListener("submit", function (e) {
 document.getElementById("insertCategoryBtn").addEventListener("click", () => {
   showForm("insert");
 });
+document.getElementById("cancelFormBtn").addEventListener("click", function () {
+  document.getElementById("formSection").classList.add("d-none");
+});

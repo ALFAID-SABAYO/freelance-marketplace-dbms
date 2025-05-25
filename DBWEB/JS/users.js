@@ -187,3 +187,6 @@ userForm.addEventListener("submit", e => {
 document.querySelector("button.btn-success")?.addEventListener("click", () => {
   showForm("insert");
 });
+document.getElementById("cancelFormBtn").addEventListener("click", function () {
+  document.getElementById("formSection").classList.add("d-none");
+});

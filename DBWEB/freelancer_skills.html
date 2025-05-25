@@ -30,7 +30,7 @@
     <!-- Table Display -->
     <div class="table-responsive">
       <table class="table table-info table-bordered" id="freelancerSkillsTable">
-        <thead class="table-dark">
+        <thead class="table-secondary">
           <tr class="text-center">
             <th>Freelancer Skill ID</th>
             <th>User ID</th>
@@ -46,6 +46,7 @@
 
     <!-- Insert/Update Form -->
     <div id="formSection" class="card p-4 bg-light d-none mt-4">
+       <button type="button" id="cancelFormBtn" class="btn-close position-absolute top-0 end-0 m-3" aria-label="Close"></button>
       <h5 id="formTitle">Insert Freelancer Skill</h5>
       <form id="freelancerSkillForm" novalidate>
         <!-- Hidden input for freelancer_skill_id (used for updates) -->

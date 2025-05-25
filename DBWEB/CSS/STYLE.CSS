@@ -1,8 +1,8 @@
 body {
   padding: 30px;
-  background: #13123f;
+  background: linear-gradient(135deg, #e3eaf1, #cfd9e2);
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  color: #eee;  /* lighter text color for better contrast */
+  color: #030303;
 }
 
 /* Container style */
@@ -15,22 +15,23 @@ body {
 table {
   border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
-  background: #7e8688;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
   transition: box-shadow 0.3s ease;
 }
 table:hover {
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.15);
 }
 thead {
-  background: linear-gradient(90deg, #4b6cb7, #182848);
-  color: rgb(81, 84, 87);
+  background: linear-gradient(to right, #6a11cb, #2575fc);
+  color: white;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
   font-weight: 600;
 }
 tbody tr:hover {
-  background-color: #40444d;
+  background-color: #f1f4f8;
 }
 tbody td {
   vertical-align: middle;
@@ -42,7 +43,7 @@ button {
   font-weight: 600;
   letter-spacing: 0.05em;
   transition: all 0.25s ease;
-  box-shadow: 0 4px 10px rgb(0 0 0 / 0.1);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
   padding: 0.4rem 1.1rem;
 }
 button.btn-success {
@@ -52,7 +53,7 @@ button.btn-success {
 }
 button.btn-success:hover {
   background: linear-gradient(135deg, #218838, #1e7e34);
-  box-shadow: 0 6px 15px rgba(33, 136, 56, 0.6);
+  box-shadow: 0 6px 15px rgba(33, 136, 56, 0.5);
 }
 button.btn-warning {
   background: linear-gradient(135deg, #ffc107, #e0a800);
@@ -61,7 +62,7 @@ button.btn-warning {
 }
 button.btn-warning:hover {
   background: linear-gradient(135deg, #e0a800, #c69500);
-  box-shadow: 0 6px 15px rgba(224, 168, 0, 0.6);
+  box-shadow: 0 6px 15px rgba(224, 168, 0, 0.5);
 }
 button.btn-secondary {
   background: linear-gradient(135deg, #6c757d, #5a6268);
@@ -70,7 +71,7 @@ button.btn-secondary {
 }
 button.btn-secondary:hover {
   background: linear-gradient(135deg, #5a6268, #4e555b);
-  box-shadow: 0 6px 15px rgba(90, 98, 104, 0.6);
+  box-shadow: 0 6px 15px rgba(90, 98, 104, 0.5);
 }
 button.btn-primary {
   background: linear-gradient(135deg, #007bff, #0056b3);
@@ -80,7 +81,7 @@ button.btn-primary {
 }
 button.btn-primary:hover {
   background: linear-gradient(135deg, #0056b3, #003d80);
-  box-shadow: 0 6px 15px rgba(0, 86, 179, 0.6);
+  box-shadow: 0 6px 15px rgba(0, 86, 179, 0.5);
 }
 
 /* Toggle button (eye icon) */
@@ -90,21 +91,21 @@ button.btn-primary:hover {
   margin-left: 8px;
   background: transparent;
   border: none;
-  color: #4b6cb7;
+  color: #2575fc;
   transition: color 0.3s ease;
 }
 .toggle-btn:hover {
-  color: #182848;
+  color: #1a4edb;
 }
 
 /* Form styling */
 #formSection {
   display: block;
   margin-top: 30px;
-  background: rgb(29, 102, 161);
+  background: rgba(255, 255, 255, 0.95);
   padding: 25px 30px;
   border-radius: 12px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
   max-width: 900px;
   margin-left: auto;
   margin-right: auto;
@@ -112,7 +113,7 @@ button.btn-primary:hover {
 }
 #formTitle {
   font-weight: 700;
-  color: #031944;
+  color: #000408;
   margin-bottom: 20px;
   letter-spacing: 0.1em;
 }
@@ -120,19 +121,19 @@ button.btn-primary:hover {
 /* Inputs */
 input.form-control {
   border-radius: 8px;
-  border: 1.8px solid #ced4da;
+  border: 1.5px solid #ced4da;
   transition: border-color 0.3s ease;
   box-shadow: none;
   font-weight: 500;
-  color: #333;
+  color: #2c3e50;
 }
 input.form-control:focus {
-  border-color: #4b6cb7;
-  box-shadow: 0 0 6px rgba(75, 108, 183, 0.6);
+  border-color: #2575fc;
+  box-shadow: 0 0 6px rgba(37, 117, 252, 0.4);
   outline: none;
 }
 
-/* Responsive improvements */
+/* Responsive */
 @media (max-width: 576px) {
   .row > div {
     margin-bottom: 15px;
