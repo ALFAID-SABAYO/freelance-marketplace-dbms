@@ -16,17 +16,16 @@
   <link rel="stylesheet" href="CSS/STYLE.CSS" />
 </head>
 <body>
-  <div class="container">
+  <div class="container my-4">
 
     <!-- Top Buttons -->
     <div class="mb-4 d-flex justify-content-between align-items-center">
       <button class="btn btn-secondary" onclick="location.href='index.html'">🏠 Home</button>
       <div>
-      <button class="btn btn-success me-2" onclick="showForm('insert')">➕ Insert</button>
-        <!-- <button class="btn btn-warning" onclick="showForm('upgrade')">🛠️ Upgrade</button> -->
+        <button class="btn btn-success me-2" onclick="showForm('insert')">➕ Insert</button>
       </div>
     </div>
-<body>
+
     <div class="table-responsive">
         <table class="table table-danger table-bordered" id="proposalsTable">
             <thead>
@@ -37,6 +36,7 @@
                     <th>BID AMOUNT</th>
                     <th>MESSAGE</th>
                     <th>SUBMITTED AT</th>
+                    <th>EDIT</th>
                 </tr>
             </thead>
             <tbody>
@@ -45,30 +45,32 @@
         </table>
     </div>
 
-     <!-- Form Section -->
-    <div id="formSection" class="card p-4 bg-light d-none mt-4">
-      <h5 id="formTitle">Insert User</h5>
+    <!-- Form Section -->
+    <div id="formSection" class="card p-4 bg-light d-none mt-4 position-relative">
+      <button type="button" id="cancelFormBtn" class="btn-close position-absolute top-0 end-0 m-3" aria-label="Close"></button>
+      <h5 id="formTitle">Insert Proposal</h5>
       <form id="userForm" novalidate>
         <div class="row">
           <div class="col-md-4 mb-3">
-            <input type="text" id="Proposals" class="form-control" placeholder="Proposal ID" required />
+            <input type="text" id="proposal_id" class="form-control" placeholder="Proposal ID" required />
           </div>
           <div class="col-md-4 mb-3">
             <input type="text" id="project_id" class="form-control" placeholder="Project ID" required />
           </div>
           <div class="col-md-4 mb-3">
-            <input type="text" id="freelance_id" class="form-control" placeholder="Freelancer ID" required />
+            <input type="text" id="freelancer_id" class="form-control" placeholder="Freelancer ID" required />
           </div>
           <div class="col-md-4 mb-3">
-            <input type="text" id="bid_amount" class="form-control" placeholder="Bid Amount" required />
+            <input type="number" step="0.01" min="0" id="bid_amount" class="form-control" placeholder="Bid Amount" required />
           </div>
-          <div class="col-md-4 mb-3">
+          <div class="col-md-8 mb-3">
             <input type="text" id="message" class="form-control" placeholder="Message" required />
           </div>
         </div>
         <button type="submit" class="btn btn-primary">💾 Submit</button>
       </form>
     </div>
+
   </div>
  
   <!-- Bootstrap JS Bundle -->
@@ -78,7 +80,6 @@
   ></script>
 
   <!-- Link to external JS file -->
-    <script src="JS/proposals.js"></script>
+  <script src="JS/proposals.js"></script>
 </body>
 </html>
-
