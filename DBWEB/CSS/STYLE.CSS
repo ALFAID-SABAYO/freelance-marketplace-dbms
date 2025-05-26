@@ -1,8 +1,9 @@
 body {
   padding: 30px;
-  background: linear-gradient(135deg, #e3eaf1, #cfd9e2);
+  background: radial-gradient( #6babeb, #d6e79a);
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   color: #030303;
+
 }
 
 /* Container style */
