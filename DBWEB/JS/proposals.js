@@ -74,7 +74,6 @@ function renderTable() {
       <td>${p.bid_amount}</td>
       <td>${p.message}</td>
       <td>${p.submitted_at ? new Date(p.submitted_at).toLocaleString() : "N/A"}</td>
-      <td><!-- No edit button as update is disabled --></td>
     `;
     tableBody.appendChild(row);
   });
@@ -89,18 +88,21 @@ function showForm() {
   proposalForm.dataset.mode = "insert";
   proposalForm.reset();
 
-  // Proposal ID is auto-generated, disable input
-  // proposalIdInput.value = "Auto-generated";
   proposalIdInput.disabled = true;
 
-  // If current user is freelancer, autofill freelancer_id and disable editing
+  // Check if current user is a freelancer
   if (currentUser && currentUser.user_type === "freelancer") {
     freelancerIdInput.value = currentUser.user_id;
     freelancerIdInput.disabled = true;
   } else {
     freelancerIdInput.value = "";
     freelancerIdInput.disabled = false;
-    alert("⚠️ You must be logged in as a freelancer to submit a proposal.");
+
+    // Only alert once per show
+    if (!freelancerIdInput.classList.contains("alerted")) {
+      alert("⚠️ You must be logged in as a freelancer to submit a proposal.");
+      freelancerIdInput.classList.add("alerted");
+    }
   }
 }
 
@@ -111,6 +113,7 @@ function hideForm() {
   proposalForm.reset();
   proposalIdInput.disabled = false;
   freelancerIdInput.disabled = false;
+  freelancerIdInput.classList.remove("alerted");
   formSection.classList.add("d-none");
   delete proposalForm.dataset.mode;
 }
@@ -127,26 +130,22 @@ proposalForm.addEventListener("submit", async (e) => {
   const message = messageInput.value.trim();
   const submitted_at = new Date().toISOString();
 
-  // Validation: all fields except proposal_id (auto)
   if (!project_id || !freelancer_id || !bid_amount || !message) {
     alert("⚠️ Please fill all required fields.");
     return;
   }
 
-  // Validate freelancer_id is a valid freelancer user
   const freelancerIdNum = Number(freelancer_id);
   if (!freelancerUserIds.has(freelancerIdNum)) {
     alert("⚠️ Freelancer ID is not valid or does not belong to a freelancer user.");
     return;
   }
 
-  // Validate bid amount is positive number
   if (isNaN(bid_amount) || Number(bid_amount) <= 0) {
     alert("⚠️ Bid amount must be a positive number.");
     return;
   }
 
-  // Prepare payload - no proposal_id sent as it's backend generated
   const payload = {
     project_id: Number(project_id),
     freelancer_id: freelancerIdNum,
@@ -168,7 +167,6 @@ proposalForm.addEventListener("submit", async (e) => {
     if (!res.ok) throw new Error(`Server responded with status ${res.status}`);
 
     const data = await res.json();
-
     proposalData.push(data);
     alert("✅ Proposal submitted successfully!");
     renderTable();
@@ -181,19 +179,22 @@ proposalForm.addEventListener("submit", async (e) => {
   }
 });
 
-// Cancel button event
+// Cancel button
 document.getElementById("cancelFormBtn").addEventListener("click", () => {
   hideForm();
 });
 
-// Insert Proposal button (some button with class btn-success)
-document.querySelector("button.btn-success").addEventListener("click", () => {
-  showForm();
-});
+// Safe event listener attachment using DOMContentLoaded
+document.addEventListener("DOMContentLoaded", () => {
+  const insertBtn = document.querySelector("button.btn-success");
+  if (insertBtn) {
+    insertBtn.addEventListener("click", showForm);
+  }
 
-// Initialize: fetch freelancer users, then fetch proposals
-hideForm();
-fetchFreelancerUsers().then(fetchProposals).catch(error => {
-  console.error("Initialization error:", error);
-  alert("❌ Initialization failed.");
+  // Initialize
+  hideForm();
+  fetchFreelancerUsers().then(fetchProposals).catch(error => {
+    console.error("Initialization error:", error);
+    alert("❌ Initialization failed.");
+  });
 });

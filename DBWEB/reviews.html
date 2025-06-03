@@ -1,47 +1,84 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <title>Reviews Table</title>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-
-    <link
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-        rel="stylesheet"
-        crossorigin="anonymous"
-    />
-    <style>
-        body { padding: 20px; }
-        table thead th { text-transform: uppercase; }
-    </style>
+  <title>Reviews Table</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  
+  <!-- Bootstrap CSS -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+    crossorigin="anonymous"
+  />
+  
+  <!-- Your external CSS -->
+  <link rel="stylesheet" href="CSS/STYLE.CSS" />
 </head>
 <body>
+  <div class="container my-4">
+
+    <!-- Top Buttons -->
+    <div class="mb-4 d-flex justify-content-between align-items-center">
+      <button class="btn btn-secondary" onclick="location.href='index.html'">🏠 Home</button>
+      <div>
+        <button class="btn btn-success me-2" onclick="showReviewForm()">➕ Insert</button>
+      </div>
+    </div>
+<h2 class="mb-3">Review</h2>
+    <!-- Reviews Table -->
     <div class="table-responsive">
-        <table class="table table-light table-bordered" id="reviewsTable">
-            <thead class="table-secondary">
-                <tr class="text-center">
-                    <th>REVIEW ID</th>
-                    <th>CONTRACT ID</th>
-                    <th>RATING</th>
-                    <th>COMMENT</th>
-                    <th>REVIEW DATE</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Reviews rows here -->
-            </tbody>
-        </table>
+      <table class="table table-light table-bordered" id="reviewsTable">
+        <thead class="table-secondary text-center">
+          <tr>
+            <th>REVIEW ID</th>
+            <th>CONTRACT ID</th>
+            <th>RATING</th>
+            <th>COMMENT</th>
+            <th>REVIEW DATE</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Dynamic review rows -->
+        </tbody>
+      </table>
     </div>
 
-    <script
-        src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
-        crossorigin="anonymous"
-    ></script>
-    <script
-        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
-        crossorigin="anonymous"
-    ></script>
-    <script src="JS/reviews.js"></script>
+    <!-- Review Form (Initially Hidden) -->
+    <div id="formSection" class="card p-4 bg-light d-none mt-4 position-relative">
+      <!-- Cancel Button -->
+      <button type="button" id="cancelReviewFormBtn" class="btn-close position-absolute top-0 end-0 m-3" aria-label="Close"></button>
+
+      <h5 id="formTitle" class="mb-3">Insert Review</h5>
+
+      <form id="userForm" novalidate>
+        <div class="row">
+          <div class="col-md-4 mb-3">
+            <input type="text" id="contract_id" class="form-control" placeholder="Contract ID" required />
+          </div>
+          <div class="col-md-4 mb-3">
+            <input type="number" step="1" min="1" max="5" id="rating" class="form-control" placeholder="Rating" required />
+          </div>
+          <div class="col-md-4 mb-3">
+            <input type="text" id="comment" class="form-control" placeholder="Comment" required />
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary">💾 Submit</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script
+    src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+    crossorigin="anonymous"
+  ></script>
+  <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+    crossorigin="anonymous"
+  ></script>
+
+  <!-- Your custom JS -->
+  <script src="JS/reviews.js"></script>
 </body>
 </html>
-
