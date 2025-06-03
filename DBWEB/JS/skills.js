@@ -1,14 +1,18 @@
-const Skills_URL = "https://miniature-computing-machine-v6rgxgqx6wg2xj96-5249.app.github.dev/ski"; // Adjust URL if needed
+// URL Constants
+const Skills_URL = "https://miniature-computing-machine-v6rgxgqx6wg2xj96-5249.app.github.dev/ski";
 const post_URL = "https://miniature-computing-machine-v6rgxgqx6wg2xj96-5249.app.github.dev/skills";
-const put_URL = "https://miniature-computing-machine-v6rgxgqx6wg2xj96-5249.app.github.dev/skills";
 
+// Global Skills Data
 let skillsData = [];
 
+// DOM Elements
 const tbody = document.querySelector("#skillsTable tbody");
 const formSection = document.getElementById("formSection");
 const skillForm = document.getElementById("skillForm");
+const nameInput = document.getElementById("name");
+const formTitle = document.getElementById("formTitle");
 
-// Render skills in the table
+// Render table
 function renderTable() {
   tbody.innerHTML = "";
   skillsData.forEach((skill) => {
@@ -16,28 +20,12 @@ function renderTable() {
     tr.innerHTML = `
       <td>${skill.skill_id}</td>
       <td>${skill.name}</td>
-      <td>
-        <button class="btn btn-sm btn-warning upgrade-btn" data-id="${skill.skill_id}">✏️</button>
-      </td>
     `;
     tbody.appendChild(tr);
   });
-
-  // Add click events to Upgrade buttons
-  document.querySelectorAll(".upgrade-btn").forEach(btn => {
-    btn.addEventListener("click", () => {
-      const id = btn.dataset.id;
-      const skill = skillsData.find(s => s.skill_id == id);
-      if (!skill) return;
-
-      showForm("upgrade");
-      document.getElementById("skill_id").value = skill.skill_id;
-      document.getElementById("name").value = skill.name;
-    });
-  });
 }
 
-// Fetch all skills on page load
+// Fetch all skills
 function fetchSkills() {
   fetch(Skills_URL)
     .then(res => {
@@ -48,84 +36,66 @@ function fetchSkills() {
       skillsData = data;
       renderTable();
     })
-    .catch(err => console.error(err.message));
+    .catch(err => console.error("❌ Error:", err.message));
 }
 
-fetchSkills();
-
-// Show form for insert or upgrade
-function showForm(mode) {
+// Show form for insert
+function showForm() {
   formSection.classList.remove("d-none");
-  document.getElementById("formTitle").innerText = mode === "insert" ? "Insert Skill" : "Upgrade Skill";
-  skillForm.dataset.mode = mode;
-
-  if (mode === "insert") {
-    skillForm.reset();
-    document.getElementById("skill_id").disabled = false;
-  } else {
-    document.getElementById("skill_id").disabled = true;
-  }
+  formTitle.innerText = "Insert Skill";
+  skillForm.reset();
 }
 
-// Hide form and reset
+// Hide form
 function hideForm() {
   skillForm.reset();
   formSection.classList.add("d-none");
 }
 
-// Handle form submit
+// Handle form submission (only insert)
 skillForm.addEventListener("submit", function (e) {
   e.preventDefault();
-  const mode = this.dataset.mode;
-  const id = document.getElementById("skill_id").value.trim();
-  const name = document.getElementById("name").value.trim();
 
-  if (!id || !name) {
-    alert("⚠️ All fields are required.");
+  const name = nameInput.value.trim();
+
+  if (!name) {
+    alert("⚠️ Skill name is required.");
     return;
   }
 
-  const requestBody = mode === "insert"
-    ? { skill_id: id, name }
-    : { name };
+  const newSkill = { name };
 
-  const url = mode === "insert" ? post_URL : `${put_URL}/${id}`;
-  const method = mode === "insert" ? "POST" : "PUT";
-
-  fetch(url, {
-    method,
+  fetch(post_URL, {
+    method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(requestBody),
+    body: JSON.stringify(newSkill)
   })
     .then(res => {
-      if (!res.ok) throw new Error(`Failed to ${mode} skill.`);
+      if (!res.ok) throw new Error("Failed to insert skill.");
       return res.json();
     })
-    .then(response => {
-      if (mode === "insert") {
-        skillsData.push(response);
-        alert("✅ Skill inserted!");
-      } else {
-        const index = skillsData.findIndex(s => s.skill_id == id);
-        if (index !== -1) skillsData[index] = response;
-        alert("✅ Skill upgraded!");
-      }
+    .then(data => {
+      skillsData.push(data);
+      alert("✅ Skill inserted successfully!");
       renderTable();
       hideForm();
     })
     .catch(err => {
-      console.error(err);
+      console.error("❌ Submit Error:", err.message);
       alert(`❌ Error: ${err.message}`);
     });
 });
 
-// Insert button click event
+// Insert button
 document.querySelector("button.btn-success").addEventListener("click", () => {
-  showForm("insert");
+  showForm();
 });
 
-// Initially hide form
-hideForm();
-document.getElementById("cancelFormBtn").addEventListener("click", function () {
-  document.getElementById("formSection").classList.add("d-none");
+// Cancel button
+document.getElementById("cancelFormBtn").addEventListener("click", () => {
+  hideForm();
 });
+
+// Initialize
+hideForm();
+fetchSkills();

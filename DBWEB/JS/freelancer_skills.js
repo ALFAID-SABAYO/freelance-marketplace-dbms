@@ -1,7 +1,6 @@
-// URL Constants
 const getURL = "https://miniature-computing-machine-v6rgxgqx6wg2xj96-5249.app.github.dev/fskill";
 const postURL = "https://miniature-computing-machine-v6rgxgqx6wg2xj96-5249.app.github.dev/freelancer_skills";
-const putURL = "https://miniature-computing-machine-v6rgxgqx6wg2xj96-5249.app.github.dev/freelancer_skills";
+const userURL = "https://miniature-computing-machine-v6rgxgqx6wg2xj96-5249.app.github.dev/user";  // user API
 
 // DOM Elements
 const tableBody = document.querySelector("#freelancerSkillsTable tbody");
@@ -12,10 +11,31 @@ const userInput = document.getElementById("user_id");
 const skillInput = document.getElementById("skill_id");
 
 let freelancerSkillsData = [];
+let freelancerUserIds = new Set();  // Store valid freelancer user IDs
+
+// Fetch users and filter freelancers based on user_type === "freelancer"
+function fetchFreelancerUsers() {
+  return fetch(userURL)
+    .then(res => {
+      if (!res.ok) throw new Error("Failed to fetch users.");
+      return res.json();
+    })
+    .then(users => {
+      freelancerUserIds.clear();
+
+      users.forEach(user => {
+        if (user.user_type === "freelancer") {
+          freelancerUserIds.add(user.user_id);
+        }
+      });
+
+      console.log("Valid freelancer IDs:", Array.from(freelancerUserIds)); // Debug log
+    });
+}
 
 // Fetch freelancer skills on page load
 function fetchFreelancerSkills() {
-  fetch(getURL)
+  return fetch(getURL)
     .then(res => {
       if (!res.ok) throw new Error("Failed to fetch freelancer skills.");
       return res.json();
@@ -23,14 +43,10 @@ function fetchFreelancerSkills() {
     .then(data => {
       freelancerSkillsData = data;
       renderTable();
-    })
-    .catch(err => {
-      console.error("❌ Fetch Error:", err);
-      alert(`❌ Error: ${err.message}`);
     });
 }
 
-// Render data into the table
+// Render data into the table (no edit buttons now)
 function renderTable() {
   tableBody.innerHTML = "";
 
@@ -40,46 +56,18 @@ function renderTable() {
       <td>${skill.freelancer_skill_id}</td>
       <td>${skill.user_id}</td>
       <td>${skill.skill_id}</td>
-      <td>
-        <button class="btn btn-sm btn-warning edit-btn"
-          data-id="${skill.freelancer_skill_id}"
-          data-user="${skill.user_id}"
-          data-skill="${skill.skill_id}">
-          ✏️
-        </button>
-      </td>
     `;
     tableBody.appendChild(row);
   });
-
-  // Attach edit button handlers
-  document.querySelectorAll(".edit-btn").forEach(button => {
-    button.addEventListener("click", () => {
-      const id = button.dataset.id;
-      const user = button.dataset.user;
-      const skill = button.dataset.skill;
-
-      showForm("update", { id, user, skill });
-    });
-  });
 }
 
-// Show the insert/update form
-function showForm(mode, data = {}) {
+// Show the insert form only (no update)
+function showForm() {
   formSection.classList.remove("d-none");
-  formTitle.innerText = mode === "insert" ? "Insert Freelancer Skill" : "Update Freelancer Skill";
-  freelancerSkillForm.dataset.mode = mode;
-  freelancerSkillForm.dataset.id = data.id || "";
-  
+  formTitle.innerText = "Insert Freelancer Skill";
+  freelancerSkillForm.dataset.mode = "insert";
   freelancerSkillForm.reset();
-
-  if (mode === "update") {
-    userInput.value = data.user;
-    skillInput.value = data.skill;
-    userInput.disabled = true;
-  } else {
-    userInput.disabled = false;
-  }
+  userInput.disabled = false;
 }
 
 // Hide and reset the form
@@ -90,11 +78,10 @@ function hideForm() {
   delete freelancerSkillForm.dataset.id;
 }
 
-// Handle form submission
+// Handle form submission — POST only, with validation
 freelancerSkillForm.addEventListener("submit", function (e) {
   e.preventDefault();
 
-  const mode = freelancerSkillForm.dataset.mode;
   const user_id = userInput.value.trim();
   const skill_id = skillInput.value.trim();
 
@@ -103,46 +90,33 @@ freelancerSkillForm.addEventListener("submit", function (e) {
     return;
   }
 
+  const userIdNum = parseInt(user_id);
+
+  if (!freelancerUserIds.has(userIdNum)) {
+    alert("⚠️ User ID does not belong to a freelancer. Please enter a valid freelancer user ID.");
+    return;
+  }
+
   const payload = {
-    user_id: parseInt(user_id),
+    user_id: userIdNum,
     skill_id: parseInt(skill_id)
   };
-
-  let url = postURL;
-  let method = "POST";
-
-  if (mode === "update") {
-    const id = freelancerSkillForm.dataset.id;
-    if (!id) {
-      alert("❌ Error: Missing freelancer_skill_id for update.");
-      return;
-    }
-    url = `${putURL}/${id}`;
-    method = "PUT";
-  }
 
   const submitBtn = freelancerSkillForm.querySelector("button[type='submit']");
   submitBtn.disabled = true;
 
-  fetch(url, {
-    method,
+  fetch(postURL, {
+    method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload)
   })
     .then(res => {
-      if (!res.ok) throw new Error(`Failed to ${mode} freelancer skill.`);
+      if (!res.ok) throw new Error("Failed to insert freelancer skill.");
       return res.json();
     })
     .then(data => {
-      if (mode === "insert") {
-        freelancerSkillsData.push(data);
-        alert("✅ Skill inserted successfully!");
-      } else {
-        const index = freelancerSkillsData.findIndex(item => item.freelancer_skill_id == data.freelancer_skill_id);
-        if (index !== -1) freelancerSkillsData[index] = data;
-        alert("✅ Skill updated successfully!");
-      }
-
+      freelancerSkillsData.push(data);
+      alert("✅ Skill inserted successfully!");
       renderTable();
       hideForm();
     })
@@ -155,14 +129,16 @@ freelancerSkillForm.addEventListener("submit", function (e) {
     });
 });
 
-// Insert button logic
+// Insert button logic (just shows form)
 document.querySelector("button.btn-success").addEventListener("click", () => {
-  showForm("insert");
+  showForm();
 });
 
-// Initialize
+// Initialize all: fetch users first, then skills
 hideForm();
-fetchFreelancerSkills();
-document.getElementById("cancelFormBtn").addEventListener("click", function () {
-  document.getElementById("formSection").classList.add("d-none");
-});
+fetchFreelancerUsers()
+  .then(fetchFreelancerSkills)
+  .catch(err => {
+    console.error("❌ Initialization Error:", err);
+    alert(`❌ Error: ${err.message}`);
+  });

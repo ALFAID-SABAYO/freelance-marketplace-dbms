@@ -24,7 +24,7 @@
       <button class="btn btn-secondary" onclick="location.href='index.html'">🏠 Home</button>
       <div>
       <button class="btn btn-success me-2" onclick="showForm('insert')">➕ Insert</button>
-        <!-- <button class="btn btn-warning" onclick="showForm('upgrade')">🛠️ Upgrade</button> -->
+        
       </div>
     </div>
     <!-- Table -->
@@ -39,7 +39,6 @@
                     <th>CATEGORY ID</th>
                     <th>BUDGET</th>
                     <th>POSTED AT</th>
-                    <th>EDIT</th>
                 </tr>
             </thead>
             <tbody>
@@ -55,9 +54,7 @@
   <h5 id="formTitle">Insert User</h5>
   <form id="userForm" novalidate>
     <div class="row">
-      <div class="col-md-4 mb-3">
-        <input type="text" id="project_id" class="form-control" placeholder="Project ID" required />
-      </div>
+  
       <div class="col-md-4 mb-3">
         <input type="text" id="client_id" class="form-control" placeholder="Client ID" required />
       </div>
@@ -85,7 +82,6 @@
     crossorigin="anonymous"
   ></script>
 
-  <!-- Link to external JS file -->
 <script src="JS/projects.js"></script>
 </body>
 </html>

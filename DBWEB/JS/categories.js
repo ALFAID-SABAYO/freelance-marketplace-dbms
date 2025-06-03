@@ -1,6 +1,5 @@
 const Categories_URL = "https://miniature-computing-machine-v6rgxgqx6wg2xj96-5249.app.github.dev/cat";
 const post_URL = "https://miniature-computing-machine-v6rgxgqx6wg2xj96-5249.app.github.dev/categories";
-const put_URL = "https://miniature-computing-machine-v6rgxgqx6wg2xj96-5249.app.github.dev/categories";
 
 let categoriesData = [];
 
@@ -17,25 +16,8 @@ function renderTable() {
       <td>${category.category_id}</td>
       <td>${category.name}</td>
       <td>${category.description}</td>
-      <td>
-        <button class="btn btn-sm btn-warning upgrade-btn" data-id="${category.category_id}">✏️</button>
-      </td>
     `;
     tbody.appendChild(tr);
-  });
-
-  // Add click events to Upgrade buttons
-  document.querySelectorAll(".upgrade-btn").forEach(btn => {
-    btn.addEventListener("click", () => {
-      const id = btn.dataset.id;
-      const category = categoriesData.find(c => c.category_id == id);
-      if (!category) return;
-
-      showForm("upgrade");
-      document.getElementById("category_id").value = category.category_id;
-      document.getElementById("name").value = category.name;
-      document.getElementById("description").value = category.description;
-    });
   });
 }
 
@@ -52,21 +34,15 @@ function fetchCategories() {
     })
     .catch(err => console.error(err.message));
 }
-
 fetchCategories();
 
-// Show form for insert or upgrade
-function showForm(mode) {
+// Show form for insert only (category_id disabled)
+function showForm() {
   formSection.classList.remove("d-none");
-  document.getElementById("formTitle").innerText = mode === "insert" ? "Insert Category" : "Upgrade Category";
-  categoryForm.dataset.mode = mode;
-
-  if (mode === "insert") {
-    categoryForm.reset();
-    document.getElementById("category_id").disabled = false;
-  } else {
-    document.getElementById("category_id").disabled = true;
-  }
+  document.getElementById("formTitle").innerText = "Insert Category";
+  categoryForm.reset();
+  categoryForm.dataset.mode = "insert";
+  document.getElementById("category_id").disabled = true; // Locking the ID field
 }
 
 // Hide form and reset
@@ -75,57 +51,47 @@ function hideForm() {
   formSection.classList.add("d-none");
 }
 
-// Handle form submit
+// Insert button click event
+document.getElementById("insertCategoryBtn").addEventListener("click", () => {
+  showForm();
+});
+
+// Handle form submit (Insert Only)
 categoryForm.addEventListener("submit", function (e) {
   e.preventDefault();
-  const mode = this.dataset.mode;
-  const id = document.getElementById("category_id").value.trim();
+
   const name = document.getElementById("name").value.trim();
   const description = document.getElementById("description").value.trim();
 
-  if (!id || !name || !description) {
+  if (!name || !description) {
     alert("⚠️ All fields are required.");
     return;
   }
 
-  const requestBody = mode === "insert"
-    ? { category_id: id, name, description }
-    : { name, description };
+  const newCategory = { name, description };
 
-  const url = mode === "insert" ? post_URL : `${put_URL}/${id}`;// checking to get the correct URL 
-  const method = mode === "insert" ? "POST" : "PUT";
-
-  fetch(url, {
-    method,
+  fetch(post_URL, {
+    method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(requestBody),
+    body: JSON.stringify(newCategory),
   })
     .then(res => {
-      if (!res.ok) throw new Error(`Failed to ${mode} category.`);
+      if (!res.ok) throw new Error("Failed to insert category.");
       return res.json();
     })
-    .then(response => {
-      if (mode === "insert") {
-        categoriesData.push(response);
-        alert("✅ Category inserted!");
-      } else {
-        const index = categoriesData.findIndex(c => c.category_id == id);
-        if (index !== -1) categoriesData[index] = response;
-        alert("✅ Category upgraded!");
-      }
+    .then(addedCategory => {
+      categoriesData.push(addedCategory);
       renderTable();
       hideForm();
+      alert("✅ New category inserted!");
     })
     .catch(err => {
       console.error(err);
-      alert(`❌ Error: ${err.message}`);
+      alert("❌ Failed to insert category.");
     });
 });
 
-// Insert button click event
-document.getElementById("insertCategoryBtn").addEventListener("click", () => {
-  showForm("insert");
-});
+// Cancel form button
 document.getElementById("cancelFormBtn").addEventListener("click", function () {
-  document.getElementById("formSection").classList.add("d-none");
+  hideForm();
 });
