@@ -1,6 +1,7 @@
 // URL Constants
 const getURL = "https://miniature-computing-machine-v6rgxgqx6wg2xj96-5249.app.github.dev/pro";
 const postURL = "https://miniature-computing-machine-v6rgxgqx6wg2xj96-5249.app.github.dev/projects";
+const userURL = "https://miniature-computing-machine-v6rgxgqx6wg2xj96-5249.app.github.dev/user";  // user API
 
 // DOM Elements
 const tableBody = document.querySelector("#projectsTable tbody");
@@ -15,10 +16,31 @@ const categoryIdInput = document.getElementById("category_id");
 const budgetInput = document.getElementById("budget");
 
 let projectData = [];
+let clientUserIds = new Set(); // Store valid client user IDs
+
+// Fetch users and filter clients based on user_type === "client"
+function fetchClientUsers() {
+  return fetch(userURL)
+    .then(res => {
+      if (!res.ok) throw new Error("Failed to fetch users.");
+      return res.json();
+    })
+    .then(users => {
+      clientUserIds.clear();
+
+      users.forEach(user => {
+        if (user.user_type === "client") {
+          clientUserIds.add(Number(user.user_id)); // Ensure numeric value
+        }
+      });
+
+      console.log("Valid client IDs:", Array.from(clientUserIds)); // Debug
+    });
+}
 
 // Fetch all projects on page load
 function fetchProjects() {
-  fetch(getURL)
+  return fetch(getURL)
     .then(res => {
       if (!res.ok) throw new Error("Failed to fetch projects.");
       return res.json();
@@ -26,14 +48,10 @@ function fetchProjects() {
     .then(data => {
       projectData = data;
       renderTable();
-    })
-    .catch(err => {
-      console.error("❌ Fetch Error:", err);
-      alert(`❌ Error: ${err.message}`);
     });
 }
 
-// Render data into the table
+// Render project data into the table
 function renderTable() {
   tableBody.innerHTML = "";
 
@@ -52,7 +70,7 @@ function renderTable() {
   });
 }
 
-// Show the insert form only
+// Show insert form
 function showForm() {
   formSection.classList.remove("d-none");
   formTitle.innerText = "Insert Project";
@@ -67,7 +85,7 @@ function hideForm() {
   delete projectForm.dataset.id;
 }
 
-// Handle form submission (Insert only)
+// Handle form submission with strict client_id validation
 projectForm.addEventListener("submit", function (e) {
   e.preventDefault();
 
@@ -82,12 +100,20 @@ projectForm.addEventListener("submit", function (e) {
     return;
   }
 
+  const clientIdNum = parseInt(client_id);
+
+  // ✅ Validate against known client user IDs
+  if (!clientUserIds.has(clientIdNum)) {
+    alert("⚠️ Client ID does not belong to a valid client user. Please enter a valid client ID.");
+    return;
+  }
+
   const payload = {
-    client_id,
+    client_id: clientIdNum,
     title,
     description,
-    category_id,
-    budget
+    category_id: parseInt(category_id),
+    budget: parseFloat(budget)
   };
 
   const submitBtn = projectForm.querySelector("button[type='submit']");
@@ -99,7 +125,7 @@ projectForm.addEventListener("submit", function (e) {
     body: JSON.stringify(payload)
   })
     .then(res => {
-      if (!res.ok) throw new Error(`Failed to insert project.`);
+      if (!res.ok) throw new Error("Failed to insert project.");
       return res.json();
     })
     .then(data => {
@@ -122,9 +148,16 @@ document.querySelector("button.btn-success").addEventListener("click", () => {
   showForm();
 });
 
-// Initialize
-hideForm();
-fetchProjects();
+// Cancel button logic
 document.getElementById("cancelFormBtn").addEventListener("click", () => {
   hideForm();
 });
+
+// Initialization: first fetch client users, then fetch projects
+hideForm();
+fetchClientUsers()
+  .then(fetchProjects)
+  .catch(err => {
+    console.error("❌ Initialization Error:", err);
+    alert(`❌ Error: ${err.message}`);
+  });
