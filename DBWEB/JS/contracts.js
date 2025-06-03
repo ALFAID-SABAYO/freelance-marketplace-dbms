@@ -1,25 +1,203 @@
 const contracts_URL = "https://miniature-computing-machine-v6rgxgqx6wg2xj96-5249.app.github.dev/con";
+const posts_URL = "https://miniature-computing-machine-v6rgxgqx6wg2xj96-5249.app.github.dev/contracts";
+const user_URL = "https://miniature-computing-machine-v6rgxgqx6wg2xj96-5249.app.github.dev/user";
 
-fetch(contracts_URL)
-    .then(response => {
-        if (!response.ok) throw new Error("Failed to fetch Contracts Data");
-        return response.json();
-    })
-    .then(data => {
-        const tbody = document.querySelector("#contractsTable tbody");
+// DOM Elements
+const tableBody = document.querySelector("#contractsTable tbody");
+const formSection = document.getElementById("formSection");
+const contractForm = document.getElementById("userForm");
+const formTitle = document.getElementById("formTitle");
 
-        data.forEach(contracts => {
-            const row = document.createElement("tr");
-            row.innerHTML = `
-                <td>${contracts.contract_id}</td>
-                <td>${contracts.project_id}</td>
-                <td>${contracts.freelancer_id}</td>
-                <td>${contracts.start_date}</td>
-                <td>${contracts.end_date}</td>
-                <td>${contracts.status}</td>
-            `;
-            tbody.appendChild(row);
-        });
-   }).catch(err=>{
-    console.log(err.message);
-})
+const projectIdInput = document.getElementById("project_id");
+const freelancerIdInput = document.getElementById("freelancer_id");
+const startDateInput = document.getElementById("start_date");
+const endDateInput = document.getElementById("end_date");
+const statusSelect = document.getElementById("status");
+
+let contractData = [];
+let freelancerUserIds = new Set(); // Store valid freelancer user IDs
+
+/**
+ * Fetch all users and filter freelancer IDs for validation
+ */
+async function fetchFreelancerUsers() {
+  try {
+    const res = await fetch(user_URL);
+    if (!res.ok) throw new Error(`Failed to fetch users. Status: ${res.status}`);
+    const users = await res.json();
+
+    freelancerUserIds.clear();
+    users.forEach(user => {
+      if (user.user_type === "freelancer") {
+        freelancerUserIds.add(Number(user.user_id));
+      }
+    });
+
+    console.log("Valid freelancer IDs:", Array.from(freelancerUserIds));
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    alert("❌ Unable to load user data for freelancer validation.");
+  }
+}
+
+/**
+ * Fetch all contracts from API and render table
+ */
+async function fetchContracts() {
+  try {
+    const res = await fetch(contracts_URL);
+    if (!res.ok) throw new Error(`Failed to fetch contracts. Status: ${res.status}`);
+    contractData = await res.json();
+    renderTable();
+  } catch (error) {
+    console.error("Error fetching contracts:", error);
+    alert("❌ Failed to load contracts.");
+  }
+}
+
+/**
+ * Render contracts into the table
+ */
+function renderTable() {
+  tableBody.innerHTML = "";
+
+  contractData.forEach(contract => {
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td>${contract.contract_id}</td>
+      <td>${contract.project_id}</td>
+      <td>${contract.freelancer_id}</td>
+      <td>${contract.start_date}</td>
+      <td>${contract.end_date || "N/A"}</td>
+      <td>${contract.status}</td>
+    `;
+    tableBody.appendChild(row);
+  });
+}
+
+/**
+ * Show insert form
+ */
+function showForm() {
+  formSection.classList.remove("d-none");
+  formTitle.innerText = "Insert Contract";
+  contractForm.dataset.mode = "insert";
+  contractForm.reset();
+
+  // Contract ID is auto-generated, no input field needed
+  // If current user is freelancer, autofill freelancer_id and disable editing
+  const currentUser = JSON.parse(localStorage.getItem("currentUser")) || null;
+  if (currentUser && currentUser.user_type === "freelancer") {
+    freelancerIdInput.value = currentUser.user_id;
+    freelancerIdInput.disabled = true;
+  } else {
+    freelancerIdInput.value = "";
+    freelancerIdInput.disabled = false;
+  }
+
+  // Reset status field
+  statusSelect.disabled = false;
+  statusSelect.value = "";
+}
+
+/**
+ * Hide form and reset inputs
+ */
+function hideForm() {
+  contractForm.reset();
+  freelancerIdInput.disabled = false;
+  statusSelect.disabled = false;
+  formSection.classList.add("d-none");
+  delete contractForm.dataset.mode;
+}
+
+/**
+ * Handle form submission (only insert mode)
+ */
+contractForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const project_id = projectIdInput.value.trim();
+  const freelancer_id = freelancerIdInput.value.trim();
+  const start_date = startDateInput.value.trim();
+  const end_date = endDateInput.value.trim();
+  const status = statusSelect.value.trim();
+
+  // Validation: all fields except end_date (optional)
+  if (!project_id || !freelancer_id || !start_date || !status) {
+    alert("⚠️ Please fill all required fields.");
+    return;
+  }
+
+  // Validate freelancer_id is a valid freelancer user
+  const freelancerIdNum = Number(freelancer_id);
+  if (!freelancerUserIds.has(freelancerIdNum)) {
+    alert("⚠️ Freelancer ID is not valid or does not belong to a freelancer user.");
+    return;
+  }
+
+  // Prepare payload - contract_id is auto-generated by backend
+  const payload = {
+    project_id: Number(project_id),
+    freelancer_id: freelancerIdNum,
+    start_date,
+    status
+  };
+
+  if (end_date) {
+    payload.end_date = end_date;
+  }
+
+  const submitBtn = contractForm.querySelector("button[type='submit']");
+  submitBtn.disabled = true;
+
+  try {
+    const res = await fetch(posts_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+
+    if (!res.ok) throw new Error(`Server responded with status ${res.status}`);
+
+    const data = await res.json();
+
+    contractData.push(data);
+    alert("✅ Contract submitted successfully!");
+    renderTable();
+    hideForm();
+  } catch (error) {
+    console.error("Error submitting contract:", error);
+    alert("❌ Error submitting contract. Please try again.");
+  } finally {
+    submitBtn.disabled = false;
+  }
+});
+
+// Cancel button event
+document.getElementById("cancelFormBtn").addEventListener("click", () => {
+  hideForm();
+});
+
+// Insert Contract button
+document.querySelector("button.btn-success").addEventListener("click", () => {
+  showForm();
+});
+
+// Auto-update status based on end_date
+endDateInput.addEventListener("change", () => {
+  if (endDateInput.value) {
+    statusSelect.value = "completed";
+    statusSelect.disabled = true;
+  } else {
+    statusSelect.disabled = false;
+    statusSelect.value = "";
+  }
+});
+
+// Initialize: fetch freelancer users, then fetch contracts
+hideForm();
+fetchFreelancerUsers().then(fetchContracts).catch(error => {
+  console.error("Initialization error:", error);
+  alert("❌ Initialization failed.");
+});

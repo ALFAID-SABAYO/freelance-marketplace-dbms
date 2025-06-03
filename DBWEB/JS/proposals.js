@@ -1,6 +1,7 @@
-const getProposalURL = "https://miniature-computing-machine-v6rgxgqx6wg2xj96-5249.app.github.dev/prop"; // GET
-const postProposalURL = "https://miniature-computing-machine-v6rgxgqx6wg2xj96-5249.app.github.dev/proposals"; // POST
-const putProposalURL = "https://miniature-computing-machine-v6rgxgqx6wg2xj96-5249.app.github.dev/proposals"; // PUT
+// URLs
+const getProposalURL = "https://miniature-computing-machine-v6rgxgqx6wg2xj96-5249.app.github.dev/prop"; // GET proposals
+const postProposalURL = "https://miniature-computing-machine-v6rgxgqx6wg2xj96-5249.app.github.dev/proposals"; // POST new proposal
+const userURL = "https://miniature-computing-machine-v6rgxgqx6wg2xj96-5249.app.github.dev/user"; // GET users
 
 // DOM Elements
 const tableBody = document.querySelector("#proposalsTable tbody");
@@ -10,29 +11,57 @@ const formTitle = document.getElementById("formTitle");
 
 const proposalIdInput = document.getElementById("proposal_id");
 const projectIdInput = document.getElementById("project_id");
-const freelancerIdInput = document.getElementById("freelancer_id");  
+const freelancerIdInput = document.getElementById("freelancer_id");
 const bidAmountInput = document.getElementById("bid_amount");
 const messageInput = document.getElementById("message");
 
 let proposalData = [];
+let freelancerUserIds = new Set(); // Store valid freelancer user IDs
 
-// Simulating getting current logged-in user from localStorage or any auth system
+// Get current logged-in user (from localStorage or auth system)
 const currentUser = JSON.parse(localStorage.getItem("currentUser")) || null;
 
-// Fetch Proposals from API
-async function fetchProposals() {
+/**
+ * Fetch all users and filter freelancer IDs for validation
+ */
+async function fetchFreelancerUsers() {
   try {
-    const res = await fetch(getProposalURL);
-    if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
-    proposalData = await res.json();
-    renderTable();
-  } catch (err) {
-    console.error("❌ Fetch Error:", err);
-    alert("Failed to load proposals.");
+    const res = await fetch(userURL);
+    if (!res.ok) throw new Error(`Failed to fetch users. Status: ${res.status}`);
+    const users = await res.json();
+
+    freelancerUserIds.clear();
+    users.forEach(user => {
+      if (user.user_type === "freelancer") {
+        freelancerUserIds.add(Number(user.user_id));
+      }
+    });
+
+    console.log("Valid freelancer IDs:", Array.from(freelancerUserIds));
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    alert("❌ Unable to load user data for freelancer validation.");
   }
 }
 
-// Render Table with proposalData
+/**
+ * Fetch all proposals from API and render table
+ */
+async function fetchProposals() {
+  try {
+    const res = await fetch(getProposalURL);
+    if (!res.ok) throw new Error(`Failed to fetch proposals. Status: ${res.status}`);
+    proposalData = await res.json();
+    renderTable();
+  } catch (error) {
+    console.error("Error fetching proposals:", error);
+    alert("❌ Failed to load proposals.");
+  }
+}
+
+/**
+ * Render proposals into the table
+ */
 function renderTable() {
   tableBody.innerHTML = "";
 
@@ -45,140 +74,110 @@ function renderTable() {
       <td>${p.bid_amount}</td>
       <td>${p.message}</td>
       <td>${p.submitted_at ? new Date(p.submitted_at).toLocaleString() : "N/A"}</td>
-      <td>
-        <button class="btn btn-warning btn-sm edit-btn"
-          data-id="${p.proposal_id}"
-          data-project="${p.project_id}"
-          data-freelancer="${p.freelancer_id}"
-          data-bid="${p.bid_amount}"
-          data-message="${p.message}">✏️</button>
-      </td>
+      <td><!-- No edit button as update is disabled --></td>
     `;
     tableBody.appendChild(row);
   });
-
-  // Attach event listeners for edit buttons
-  document.querySelectorAll(".edit-btn").forEach(btn => {
-    btn.addEventListener("click", () => {
-      showForm("update", {
-        proposal_id: btn.dataset.id,
-        project_id: btn.dataset.project,
-        freelancer_id: btn.dataset.freelancer,
-        bid_amount: btn.dataset.bid,
-        message: btn.dataset.message
-      });
-    });
-  });
 }
 
-// Show Form for insert or update
-function showForm(mode, data = {}) {
+/**
+ * Show insert form only (no update mode)
+ */
+function showForm() {
   formSection.classList.remove("d-none");
-  formTitle.innerText = mode === "insert" ? "Insert Proposal" : "Update Proposal";
-  proposalForm.dataset.mode = mode;
-  proposalForm.dataset.id = data.proposal_id || "";
+  formTitle.innerText = "Submit Proposal";
+  proposalForm.dataset.mode = "insert";
   proposalForm.reset();
 
-  if (mode === "update") {
-    proposalIdInput.value = data.proposal_id;
-    projectIdInput.value = data.project_id;
-    freelancerIdInput.value = data.freelancer_id;
-    bidAmountInput.value = data.bid_amount;
-    messageInput.value = data.message;
-    proposalIdInput.disabled = true;
-    freelancerIdInput.disabled = true; // Don't allow changing freelancer on update
-  } else {
-    proposalIdInput.disabled = false;
+  // Proposal ID is auto-generated, disable input
+  // proposalIdInput.value = "Auto-generated";
+  proposalIdInput.disabled = true;
 
-    // Auto-fill freelancer_id for insert if currentUser is freelancer
-    if (currentUser && currentUser.user_type === "freelancer") {
-      freelancerIdInput.value = currentUser.user_id;
-      freelancerIdInput.disabled = true; // Prevent user changing this
-    } else {
-      freelancerIdInput.value = "";
-      freelancerIdInput.disabled = false;
-      alert("⚠️ You must be logged in as a freelancer to submit proposals.");
-    }
+  // If current user is freelancer, autofill freelancer_id and disable editing
+  if (currentUser && currentUser.user_type === "freelancer") {
+    freelancerIdInput.value = currentUser.user_id;
+    freelancerIdInput.disabled = true;
+  } else {
+    freelancerIdInput.value = "";
+    freelancerIdInput.disabled = false;
+    alert("⚠️ You must be logged in as a freelancer to submit a proposal.");
   }
 }
 
-// Hide Form and reset state
+/**
+ * Hide form and reset inputs
+ */
 function hideForm() {
   proposalForm.reset();
   proposalIdInput.disabled = false;
   freelancerIdInput.disabled = false;
   formSection.classList.add("d-none");
-  delete proposalForm.dataset.id;
+  delete proposalForm.dataset.mode;
 }
 
-// Handle form submit (insert or update)
-proposalForm.addEventListener("submit", async function (e) {
+/**
+ * Handle form submission (only insert mode)
+ */
+proposalForm.addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  const mode = proposalForm.dataset.mode;
-  const proposal_id = proposalIdInput.value.trim();
   const project_id = projectIdInput.value.trim();
   const freelancer_id = freelancerIdInput.value.trim();
   const bid_amount = bidAmountInput.value.trim();
   const message = messageInput.value.trim();
   const submitted_at = new Date().toISOString();
 
-  if (!proposal_id || !project_id || !freelancer_id || !bid_amount || !message) {
-    alert("⚠️ Please fill all fields.");
+  // Validation: all fields except proposal_id (auto)
+  if (!project_id || !freelancer_id || !bid_amount || !message) {
+    alert("⚠️ Please fill all required fields.");
     return;
   }
 
-  // Validate bid_amount is a positive number
-  if (isNaN(bid_amount) || Number(bid_amount) < 0) {
-    alert("⚠️ Bid amount must be a valid positive number.");
+  // Validate freelancer_id is a valid freelancer user
+  const freelancerIdNum = Number(freelancer_id);
+  if (!freelancerUserIds.has(freelancerIdNum)) {
+    alert("⚠️ Freelancer ID is not valid or does not belong to a freelancer user.");
     return;
   }
 
+  // Validate bid amount is positive number
+  if (isNaN(bid_amount) || Number(bid_amount) <= 0) {
+    alert("⚠️ Bid amount must be a positive number.");
+    return;
+  }
+
+  // Prepare payload - no proposal_id sent as it's backend generated
   const payload = {
-    proposal_id,
-    project_id,
-    freelancer_id,
+    project_id: Number(project_id),
+    freelancer_id: freelancerIdNum,
     bid_amount: Number(bid_amount),
     message,
     submitted_at
   };
 
-  let url = postProposalURL;
-  let method = "POST";
-
-  if (mode === "update") {
-    const id = proposalForm.dataset.id;
-    url = `${putProposalURL}/${id}`;
-    method = "PUT";
-  }
+  const submitBtn = proposalForm.querySelector("button[type='submit']");
+  submitBtn.disabled = true;
 
   try {
-    const res = await fetch(url, {
-      method,
+    const res = await fetch(postProposalURL, {
+      method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload)
     });
 
-    if (!res.ok) {
-      throw new Error(`Server error: ${res.status}`);
-    }
+    if (!res.ok) throw new Error(`Server responded with status ${res.status}`);
 
     const data = await res.json();
 
-    if (mode === "insert") {
-      proposalData.push(data);
-      alert("✅ Proposal inserted.");
-    } else {
-      const index = proposalData.findIndex(p => p.proposal_id == data.proposal_id);
-      if (index !== -1) proposalData[index] = data;
-      alert("✅ Proposal updated.");
-    }
-
+    proposalData.push(data);
+    alert("✅ Proposal submitted successfully!");
     renderTable();
     hideForm();
-  } catch (err) {
-    console.error("❌ Submit Error:", err);
-    alert("❌ Error submitting form.");
+  } catch (error) {
+    console.error("Error submitting proposal:", error);
+    alert("❌ Error submitting proposal. Please try again.");
+  } finally {
+    submitBtn.disabled = false;
   }
 });
 
@@ -187,6 +186,14 @@ document.getElementById("cancelFormBtn").addEventListener("click", () => {
   hideForm();
 });
 
-// Initial load
+// Insert Proposal button (some button with class btn-success)
+document.querySelector("button.btn-success").addEventListener("click", () => {
+  showForm();
+});
+
+// Initialize: fetch freelancer users, then fetch proposals
 hideForm();
-fetchProposals();
+fetchFreelancerUsers().then(fetchProposals).catch(error => {
+  console.error("Initialization error:", error);
+  alert("❌ Initialization failed.");
+});
