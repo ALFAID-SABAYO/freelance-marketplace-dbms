@@ -68,7 +68,7 @@ function renderTable() {
   proposalData.forEach(p => {
     const row = document.createElement("tr");
     row.innerHTML = `
-      <td>${p.proposal_id}</td>
+      <td >${p.proposal_id}</td>
       <td>${p.project_id}</td>
       <td>${p.freelancer_id}</td>
       <td>${p.bid_amount}</td>
