@@ -8,6 +8,7 @@ const tableBody = document.querySelector("#projectsTable tbody");
 const formSection = document.getElementById("formSection");
 const projectForm = document.getElementById("userForm");
 const formTitle = document.getElementById("formTitle");
+const tableSection = document.getElementById("tableSection");
 
 const clientIdInput = document.getElementById("client_id");
 const titleInput = document.getElementById("title");
@@ -15,8 +16,12 @@ const descriptionInput = document.getElementById("description");
 const categoryIdInput = document.getElementById("category_id");
 const budgetInput = document.getElementById("budget");
 
+const chartSection = document.getElementById("chartSection");
+const skillChartCanvas = document.getElementById("skillChart");
+
 let projectData = [];
 let clientUserIds = new Set(); // Store valid client user IDs
+let budgetChart = null;
 
 // Fetch users and filter clients based on user_type === "client"
 function fetchClientUsers() {
@@ -71,11 +76,13 @@ function renderTable() {
 }
 
 // Show insert form
-function showForm() {
+function showForm(mode = "insert") {
   formSection.classList.remove("d-none");
-  formTitle.innerText = "Insert Project";
-  projectForm.dataset.mode = "insert";
+  chartSection.classList.add("d-none");
+  formTitle.innerText = mode === "insert" ? "Insert Project" : "Edit Project";
+  projectForm.dataset.mode = mode;
   projectForm.reset();
+  
 }
 
 // Hide and reset the form
@@ -153,6 +160,71 @@ document.getElementById("cancelFormBtn").addEventListener("click", () => {
   hideForm();
 });
 
+// Chart display functions
+
+function showChart() {
+  formSection.classList.add("d-none");
+  chartSection.classList.remove("d-none");
+  tableSection.classList.add("d-none");
+
+  // Prepare data grouped by category_id with total budget sums
+  const categoryBudgets = {};
+
+  projectData.forEach(project => {
+    const catId = project.category_id;
+    const budget = parseFloat(project.budget) || 0;
+    if (!categoryBudgets[catId]) categoryBudgets[catId] = 0;
+    categoryBudgets[catId] += budget;
+  });
+
+  const labels = Object.keys(categoryBudgets);
+  const data = Object.values(categoryBudgets);
+
+  if (budgetChart) {
+    budgetChart.destroy();
+  }
+
+  budgetChart = new Chart(skillChartCanvas, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{
+        label: 'Total Budget per Category',
+        data,
+        backgroundColor: "skyblue",
+        borderColor: "skyblue",
+        borderWidth: 1,
+        borderRadius: 5
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display: true },
+        title: {
+          display: true,
+          text: 'Projects Budget by Category'
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: {
+            callback: function(value) {
+              return '$' + value.toFixed(2);
+            }
+          }
+        }
+      }
+    }
+  });
+}
+
+function hideChart() {
+  chartSection.classList.add("d-none");
+  tableSection.classList.remove("d-none");
+}
+
 // Initialization: first fetch client users, then fetch projects
 hideForm();
 fetchClientUsers()
@@ -161,3 +233,4 @@ fetchClientUsers()
     console.error("❌ Initialization Error:", err);
     alert(`❌ Error: ${err.message}`);
   });
+

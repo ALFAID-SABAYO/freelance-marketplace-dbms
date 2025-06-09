@@ -119,22 +119,28 @@ function showChart() {
   if (chartInstance) chartInstance.destroy();
 
   chartInstance = new Chart(ctx, {
-    type: "bar",
+    type: "pie",
     data: {
       labels,
       datasets: [{
         label: "User Count",
         data,
-        backgroundColor: "skyblue",
+        backgroundColor:["plum", "lightpink"],
+        borderRadius: 5,
+       
+      borderColor: "white",
+      borderWidth: 1
       }]
     },
     options: {
       responsive: true,
-      scales: {
-        y: { beginAtZero: true }
+     plugins: {
+      legend: {
+        position: 'bottom'
       }
     }
-  });
+  }
+});
 }
 
 function hideChart() {

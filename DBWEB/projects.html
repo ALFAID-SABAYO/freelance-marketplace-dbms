@@ -14,6 +14,7 @@
   />
   
   <link rel="stylesheet" href="CSS/STYLE.CSS" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
   <div class="container">
@@ -22,12 +23,12 @@
       <button class="btn btn-secondary" onclick="location.href='index.html'">🏠 Home</button>
       <div>
       <button class="btn btn-success me-2" onclick="showForm('insert')">➕ Insert</button>
-        
+      <button class="btn btn-info" onclick="showChart()">📊 Show Chart</button>
       </div>
     </div>
     <h2 class="mb-3">Project</h2>
   
-    <div class="table-responsive shadow-sm rounded">
+    <div id="tableSection" class="table-responsive shadow-sm rounded">
         <table class="table table-light table-bordered" id="projectsTable">
             <thead class="table-secondary">
                 <tr class="text-center">
@@ -70,6 +71,15 @@
     </div>
     <button type="submit" class="btn btn-primary">💾 Submit</button>
   </form>
+</div>
+
+ <div id="chartSection" class="card p-4 bg-white d-none">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h5>Projects Budget Chart</h5>
+    <button class="btn btn-light" onclick="hideChart()">✖ </button>
+  </div>
+  <canvas id="skillChart" width="400" height="200"></canvas>
+</div>
 </div>
 
   <script

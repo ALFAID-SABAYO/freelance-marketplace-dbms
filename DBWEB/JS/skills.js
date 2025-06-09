@@ -2,8 +2,9 @@
 const Skills_URL = "https://miniature-computing-machine-v6rgxgqx6wg2xj96-5249.app.github.dev/ski";
 const post_URL = "https://miniature-computing-machine-v6rgxgqx6wg2xj96-5249.app.github.dev/skills";
 
-// Global Skills Data
+// Global Variables
 let skillsData = [];
+let chartInstance = null;
 
 // DOM Elements
 const tbody = document.querySelector("#skillsTable tbody");
@@ -11,11 +12,13 @@ const formSection = document.getElementById("formSection");
 const skillForm = document.getElementById("skillForm");
 const nameInput = document.getElementById("name");
 const formTitle = document.getElementById("formTitle");
+const tableSection = document.getElementById("tableSection");
+const chartSection = document.getElementById("chartSection");
 
-// Render table
+// 🎨 Render Table
 function renderTable() {
   tbody.innerHTML = "";
-  skillsData.forEach((skill) => {
+  skillsData.forEach(skill => {
     const tr = document.createElement("tr");
     tr.innerHTML = `
       <td>${skill.skill_id}</td>
@@ -25,7 +28,7 @@ function renderTable() {
   });
 }
 
-// Fetch all skills
+// 📡 Fetch Skills
 function fetchSkills() {
   fetch(Skills_URL)
     .then(res => {
@@ -39,25 +42,26 @@ function fetchSkills() {
     .catch(err => console.error("❌ Error:", err.message));
 }
 
-// Show form for insert
-function showForm() {
+// ➕ Show Insert Form
+function showForm(mode = "insert") {
   formSection.classList.remove("d-none");
   formTitle.innerText = "Insert Skill";
   skillForm.reset();
+  
 }
 
-// Hide form
+// ❌ Hide Form
 function hideForm() {
   skillForm.reset();
   formSection.classList.add("d-none");
+  
 }
 
-// Handle form submission (only insert)
+// 💾 Handle Form Submit
 skillForm.addEventListener("submit", function (e) {
   e.preventDefault();
 
   const name = nameInput.value.trim();
-
   if (!name) {
     alert("⚠️ Skill name is required.");
     return;
@@ -86,16 +90,63 @@ skillForm.addEventListener("submit", function (e) {
     });
 });
 
-// Insert button
-document.querySelector("button.btn-success").addEventListener("click", () => {
-  showForm();
-});
-
-// Cancel button
+// ❌ Cancel Button
 document.getElementById("cancelFormBtn").addEventListener("click", () => {
   hideForm();
 });
 
-// Initialize
+// 📊 Show Chart
+function showChart() {
+  formSection.classList.add("d-none");
+  chartSection.classList.remove("d-none");
+  tableSection.classList.add("d-none");
+
+  const skillCounts = {};
+
+  skillsData.forEach(skill => {
+    const skillName = skill.name;
+    skillCounts[skillName] = (skillCounts[skillName] || 0) + 1;
+  });
+
+  const labels = Object.keys(skillCounts);
+  const data = Object.values(skillCounts);
+
+  const ctx = document.getElementById("skillChart").getContext("2d");
+
+ if (chartInstance) chartInstance.destroy(); // Destroy existing chart
+
+chartInstance = new Chart(ctx, {
+  type: "pie",
+  data: {
+    labels,
+    datasets: [{
+      label: "Skill Frequency",
+      data,
+      backgroundColor: [
+        "lightblue", "lightgreen", "lightcoral", "lightpink", 
+        "khaki", "plum", "salmon", "skyblue", "gold", "orange"
+      ],
+      borderColor: "white",
+      borderWidth: 1
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: 'bottom'
+      }
+    }
+  }
+});
+}
+
+// 🔙 Hide Chart
+function hideChart() {
+  chartSection.classList.add("d-none");
+  tableSection.classList.remove("d-none");
+}
+
+// 🚀 Initialize
 hideForm();
 fetchSkills();

@@ -3,9 +3,12 @@ const getURL = "https://miniature-computing-machine-v6rgxgqx6wg2xj96-5249.app.gi
 const postURL = "https://miniature-computing-machine-v6rgxgqx6wg2xj96-5249.app.github.dev/freelancer_skills";
 const userURL = "https://miniature-computing-machine-v6rgxgqx6wg2xj96-5249.app.github.dev/user";
 
+// === Chart Variable ===
+let skillChartInstance = null;
+
 // === DOM Content Loaded ===
 document.addEventListener("DOMContentLoaded", () => {
-  // === DOM Elements ===
+  const tableSection = document.getElementById("tableSection");
   const tableBody = document.querySelector("#freelancerSkillsTable tbody");
   const formSection = document.getElementById("formSection");
   const freelancerSkillForm = document.getElementById("freelancerSkillForm");
@@ -13,7 +16,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const userInput = document.getElementById("user_id");
   const skillInput = document.getElementById("skill_id");
   const cancelFormBtn = document.getElementById("cancelFormBtn");
-  const insertBtn = document.querySelector("button.btn-success");
+  const chartSection = document.getElementById("chartSection");
+  const chartCanvas = document.getElementById("skillChart");
 
   let freelancerSkillsData = [];
   let freelancerUserIds = new Set();
@@ -21,10 +25,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // === Fetch Freelancer Users ===
   function fetchFreelancerUsers() {
     return fetch(userURL)
-      .then(res => {
-        if (!res.ok) throw new Error("Failed to fetch users.");
-        return res.json();
-      })
+      .then(res => res.ok ? res.json() : Promise.reject("Failed to fetch users."))
       .then(users => {
         freelancerUserIds.clear();
         users.forEach(user => {
@@ -32,17 +33,13 @@ document.addEventListener("DOMContentLoaded", () => {
             freelancerUserIds.add(user.user_id);
           }
         });
-        console.log("Freelancer IDs:", [...freelancerUserIds]);
       });
   }
 
   // === Fetch Freelancer Skills ===
   function fetchFreelancerSkills() {
     return fetch(getURL)
-      .then(res => {
-        if (!res.ok) throw new Error("Failed to fetch freelancer skills.");
-        return res.json();
-      })
+      .then(res => res.ok ? res.json() : Promise.reject("Failed to fetch freelancer skills."))
       .then(data => {
         freelancerSkillsData = data;
         renderTable();
@@ -55,21 +52,23 @@ document.addEventListener("DOMContentLoaded", () => {
     freelancerSkillsData.forEach(skill => {
       const row = document.createElement("tr");
       row.innerHTML = `
-        <td>${skill.freelancer_skill_id}</td>
-        <td>${skill.user_id}</td>
-        <td>${skill.skill_id}</td>
+        <td class="text-center">${skill.freelancer_skill_id}</td>
+        <td class="text-center">${skill.user_id}</td>
+        <td class="text-center">${skill.skill_id}</td>
       `;
       tableBody.appendChild(row);
     });
   }
 
   // === Show Form ===
-  function showForm() {
+  window.showForm = function () {
     formSection.classList.remove("d-none");
     formTitle.innerText = "Insert Freelancer Skill";
     freelancerSkillForm.dataset.mode = "insert";
     freelancerSkillForm.reset();
     userInput.disabled = false;
+    // tableSection.classList.add("d-none");
+    // chartSection.classList.add("d-none");
   }
 
   // === Hide Form ===
@@ -78,9 +77,59 @@ document.addEventListener("DOMContentLoaded", () => {
     userInput.disabled = false;
     formSection.classList.add("d-none");
     delete freelancerSkillForm.dataset.id;
+    tableSection.classList.remove("d-none");
   }
 
-  // === Form Submit ===
+  // === Show Chart ===
+  window.showChart = function () {
+    chartSection.classList.remove("d-none");
+    tableSection.classList.add("d-none");
+    formSection.classList.add("d-none");
+
+    const skillCounts = {};
+    freelancerSkillsData.forEach(entry => {
+      const skillId = entry.skill_id;
+      skillCounts[skillId] = (skillCounts[skillId] || 0) + 1;
+    });
+
+    const labels = Object.keys(skillCounts);
+    const data = Object.values(skillCounts);
+    const ctx = chartCanvas.getContext("2d");
+
+    if (skillChartInstance) {
+      skillChartInstance.destroy();
+    }
+
+    skillChartInstance = new Chart(ctx, {
+      type: "bar",
+      data: {
+        labels,
+        datasets: [{
+          label: "Number of Freelancers per Skill",
+          data,
+          backgroundColor: "skyblue",
+          borderRadius: 5
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: { precision: 0 }
+          }
+        }
+      }
+    });
+  }
+
+  // === Hide Chart ===
+  window.hideChart = function () {
+    chartSection.classList.add("d-none");
+    tableSection.classList.remove("d-none");
+  }
+
+  // === Form Submit Handler ===
   freelancerSkillForm.addEventListener("submit", function (e) {
     e.preventDefault();
 
@@ -93,17 +142,14 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     const userIdNum = parseInt(user_id);
+    const skillIdNum = parseInt(skill_id);
 
     if (!freelancerUserIds.has(userIdNum)) {
       alert("⚠️ User ID does not belong to a freelancer.");
       return;
     }
 
-    const payload = {
-      user_id: userIdNum,
-      skill_id: parseInt(skill_id)
-    };
-
+    const payload = { user_id: userIdNum, skill_id: skillIdNum };
     const submitBtn = freelancerSkillForm.querySelector("button[type='submit']");
     submitBtn.disabled = true;
 
@@ -112,10 +158,7 @@ document.addEventListener("DOMContentLoaded", () => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload)
     })
-      .then(res => {
-        if (!res.ok) throw new Error("Failed to insert freelancer skill.");
-        return res.json();
-      })
+      .then(res => res.ok ? res.json() : Promise.reject("Failed to insert freelancer skill."))
       .then(data => {
         freelancerSkillsData.push(data);
         alert("✅ Skill inserted successfully!");
@@ -124,29 +167,23 @@ document.addEventListener("DOMContentLoaded", () => {
       })
       .catch(err => {
         console.error("❌ Submit Error:", err);
-        alert(`❌ Error: ${err.message}`);
+        alert(`❌ Error: ${err}`);
       })
       .finally(() => {
         submitBtn.disabled = false;
       });
   });
 
-  // === Insert Button Click ===
-  insertBtn.addEventListener("click", () => {
-    showForm();
-  });
-
-  // === Cancel Button Click ===
   cancelFormBtn.addEventListener("click", () => {
     hideForm();
   });
 
-  // === Initialize ===
+  // === Init ===
   hideForm();
   fetchFreelancerUsers()
     .then(fetchFreelancerSkills)
     .catch(err => {
       console.error("❌ Initialization Error:", err);
-      alert(`❌ Error: ${err.message}`);
+      alert(`❌ Error: ${err}`);
     });
 });
