@@ -3,7 +3,7 @@ body {
   background: radial-gradient( #6babeb, #d6e79a);
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   color: #030303;
-
+  background-color:  #d6e79a;
 }
 
 /* Container style */
@@ -139,4 +139,12 @@ input.form-control:focus {
   .row > div {
     margin-bottom: 15px;
   }
+}
+
+#chartSection canvas {
+  max-height: 300px;
+}
+
+h2 {
+  font-weight: bold;
 }

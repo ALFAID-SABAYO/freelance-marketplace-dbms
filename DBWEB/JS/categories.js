@@ -2,16 +2,18 @@ const Categories_URL = "https://miniature-computing-machine-v6rgxgqx6wg2xj96-524
 const post_URL = "https://miniature-computing-machine-v6rgxgqx6wg2xj96-5249.app.github.dev/categories";
 
 let categoriesData = [];
-
 const tbody = document.querySelector("#categoriesTable tbody");
 const formSection = document.getElementById("formSection");
 const categoryForm = document.getElementById("categoryForm");
+const chartSection = document.getElementById("chartSection");
+let chartInstance;
 
-// Render categories in the table
+// Render categories table
 function renderTable() {
   tbody.innerHTML = "";
   categoriesData.forEach((category) => {
     const tr = document.createElement("tr");
+    tr.classList.add("text-center");
     tr.innerHTML = `
       <td>${category.category_id}</td>
       <td>${category.name}</td>
@@ -21,52 +23,42 @@ function renderTable() {
   });
 }
 
-// Fetch all categories on page load
+// Fetch all categories
 function fetchCategories() {
   fetch(Categories_URL)
-    .then(res => {
-      if (!res.ok) throw new Error("Failed to fetch categories");
-      return res.json();
-    })
+    .then(res => res.json())
     .then(data => {
       categoriesData = data;
       renderTable();
     })
-    .catch(err => console.error(err.message));
+    .catch(err => console.error("❌ Fetch error:", err.message));
 }
 fetchCategories();
 
-// Show form for insert only (category_id disabled)
+// Show insert form
 function showForm() {
   formSection.classList.remove("d-none");
+  chartSection.classList.add("d-none");
   document.getElementById("formTitle").innerText = "Insert Category";
   categoryForm.reset();
-  categoryForm.dataset.mode = "insert";
-  document.getElementById("category_id").disabled = true; // Locking the ID field
+  categoryForm.classList.remove("was-validated");
 }
 
-// Hide form and reset
+// Hide insert form
 function hideForm() {
   categoryForm.reset();
   formSection.classList.add("d-none");
 }
 
-// Insert button click event
-document.getElementById("insertCategoryBtn").addEventListener("click", () => {
-  showForm();
-});
-
-// Handle form submit (Insert Only)
+// Handle form submission
 categoryForm.addEventListener("submit", function (e) {
   e.preventDefault();
+  categoryForm.classList.add("was-validated");
 
   const name = document.getElementById("name").value.trim();
   const description = document.getElementById("description").value.trim();
 
-  if (!name || !description) {
-    alert("⚠️ All fields are required.");
-    return;
-  }
+  if (!name || !description) return;
 
   const newCategory = { name, description };
 
@@ -75,23 +67,63 @@ categoryForm.addEventListener("submit", function (e) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(newCategory),
   })
-    .then(res => {
-      if (!res.ok) throw new Error("Failed to insert category.");
-      return res.json();
-    })
+    .then(res => res.json())
     .then(addedCategory => {
       categoriesData.push(addedCategory);
       renderTable();
       hideForm();
-      alert("✅ New category inserted!");
+      alert("✅ Category inserted successfully!");
     })
     .catch(err => {
-      console.error(err);
+      console.error("❌ Insert failed:", err);
       alert("❌ Failed to insert category.");
     });
 });
 
 // Cancel form button
-document.getElementById("cancelFormBtn").addEventListener("click", function () {
-  hideForm();
-});
+document.getElementById("cancelFormBtn").addEventListener("click", hideForm);
+
+// Show Chart
+function showChart() {
+ tableSection.classList.add("d-none");
+  formSection.classList.add("d-none");
+  chartSection.classList.remove("d-none");
+
+
+  const labels = categoriesData.map(cat => cat.name);
+  const dataCounts = labels.reduce((acc, name) => {
+    acc[name] = (acc[name] || 0) + 1;
+    return acc;
+  }, {});
+  
+  const chartLabels = Object.keys(dataCounts);
+  const chartData = Object.values(dataCounts);
+
+  if (chartInstance) chartInstance.destroy();
+
+  const ctx = document.getElementById("categoryChart").getContext("2d");
+  chartInstance = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: chartLabels,
+      datasets: [{
+        label: 'Number of Categories',
+        data: chartData,
+        backgroundColor: 'rgba(54, 162, 235, 0.6)',
+        borderColor: 'rgba(54, 162, 235, 1)',
+        borderWidth: 1,
+      }]
+    },
+    options: {
+      scales: {
+        y: { beginAtZero: true }
+      }
+    }
+  });
+}
+
+// Hide chart
+function hideChart() {
+  chartSection.classList.add("d-none");
+  tableSection.classList.remove("d-none");
+}

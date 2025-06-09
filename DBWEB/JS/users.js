@@ -1,23 +1,24 @@
-const users_URL = "https://miniature-computing-machine-v6rgxgqx6wg2xj96-5249.app.github.dev/user"; // GET all users
-const post_URL = "https://miniature-computing-machine-v6rgxgqx6wg2xj96-5249.app.github.dev/users"; // POST new user
+const users_URL = "https://miniature-computing-machine-v6rgxgqx6wg2xj96-5249.app.github.dev/user";
+const post_URL = "https://miniature-computing-machine-v6rgxgqx6wg2xj96-5249.app.github.dev/users";
 
 let usersData = [];
-
 const tbody = document.querySelector("#usersTable tbody");
 const formSection = document.getElementById("formSection");
 const userForm = document.getElementById("userForm");
+const tableSection = document.getElementById("tableSection");
+const chartSection = document.getElementById("chartSection");
+let chartInstance;
 
 // Render users table
 function renderTable() {
   tbody.innerHTML = "";
-
   usersData.forEach((user) => {
     const tr = document.createElement("tr");
     tr.innerHTML = `
       <td>${user.user_id}</td>
       <td>${user.username}</td>
       <td>${user.email}</td>
-      <td>********</td>  <!-- Password always shown as asterisks -->
+      <td>********</td>
       <td>${user.full_name}</td>
       <td>${user.user_type}</td>
       <td>${user.created_at}</td>
@@ -26,7 +27,7 @@ function renderTable() {
   });
 }
 
-// Fetch all users on page load
+// Fetch all users
 function fetchUsers() {
   fetch(users_URL)
     .then(res => {
@@ -41,7 +42,7 @@ function fetchUsers() {
 }
 fetchUsers();
 
-// Show form for insert only
+// Show/hide form
 function showForm() {
   formSection.classList.remove("d-none");
   document.getElementById("formTitle").innerText = "Insert User";
@@ -49,29 +50,21 @@ function showForm() {
   userForm.reset();
 }
 
-// Hide form and reset
 function hideForm() {
   userForm.reset();
   formSection.classList.add("d-none");
 }
 
-// Insert button event — assumes your HTML button calls this
-document.querySelector("button.btn-success")?.addEventListener("click", () => {
-  showForm();
-});
-
-// Form submit handler
+// Submit form
 userForm.addEventListener("submit", e => {
   e.preventDefault();
 
-  // Remove user_id since backend handles it
-  // const id = document.getElementById("user_id").value.trim();
   const username = document.getElementById("username").value.trim();
   const email = document.getElementById("email").value.trim();
   const password = document.getElementById("password").value.trim();
   const full_name = document.getElementById("full_name").value.trim();
   const user_type = document.getElementById("user_type").value.trim();
-  const created_at = new Date().toISOString().split("T")[0]; // Format: YYYY-MM-DD
+  const created_at = new Date().toISOString().split("T")[0];
 
   if (!username || !email || !password || !full_name || !user_type) {
     alert("⚠️ All fields are required.");
@@ -101,6 +94,50 @@ userForm.addEventListener("submit", e => {
     });
 });
 
-document.getElementById("cancelFormBtn").addEventListener("click", function () {
-  formSection.classList.add("d-none");
+// Cancel form
+document.getElementById("cancelFormBtn").addEventListener("click", () => {
+  hideForm();
 });
+
+// Chart functions
+function showChart() {
+  tableSection.classList.add("d-none");
+  formSection.classList.add("d-none");
+  chartSection.classList.remove("d-none");
+
+  const userTypeCount = {};
+  usersData.forEach(user => {
+    const type = user.user_type;
+    userTypeCount[type] = (userTypeCount[type] || 0) + 1;
+  });
+
+  const labels = Object.keys(userTypeCount);
+  const data = Object.values(userTypeCount);
+
+  const ctx = document.getElementById("userChart").getContext("2d");
+
+  if (chartInstance) chartInstance.destroy();
+
+  chartInstance = new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels,
+      datasets: [{
+        label: "User Count",
+        data,
+        backgroundColor: "skyblue",
+      }]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        y: { beginAtZero: true }
+      }
+    }
+  });
+}
+
+function hideChart() {
+  chartSection.classList.add("d-none");
+  tableSection.classList.remove("d-none");
+}
