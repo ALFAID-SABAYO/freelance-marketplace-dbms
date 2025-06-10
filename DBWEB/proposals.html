@@ -12,7 +12,6 @@
   />
   
   <link rel="stylesheet" href="CSS/STYLE.CSS" />
-   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 </head>
 <body>
@@ -23,11 +22,10 @@
       <button class="btn btn-secondary" onclick="location.href='index.html'">🏠 Home</button>
       <div>
         <button class="btn btn-success me-2" onclick="showForm('insert')">➕ Insert</button>
-         <button class="btn btn-info" onclick="showChart()">📊 Show Chart</button>
       </div>
     </div>
 <h2 class="mb-3">Proposal</h2>
-    <div  id="tableSection" class="table-responsive">
+    <div class="table-responsive">
         <table class="table table-light table-bordered" id="proposalsTable">
            <thead class="table-secondary">
                 <tr>
@@ -48,9 +46,9 @@
       <h5 id="formTitle">Insert Proposal</h5>
       <form id="userForm" novalidate>
         <div class="row">
-          <div class="col-md-4 mb-3">
+          <!-- <div class="col-md-4 mb-3">
             <input type="text" id="proposal_id" class="form-control" placeholder="Proposal ID" required />
-          </div>
+          </div> -->
           <div class="col-md-4 mb-3">
             <input type="text" id="project_id" class="form-control" placeholder="Project ID" required />
           </div>
@@ -67,13 +65,6 @@
         <button type="submit" class="btn btn-primary">💾 Submit</button>
       </form>
     </div>
-     <div id="chartSection" class="card p-4 bg-white d-none">
-  <div class="d-flex justify-content-between align-items-center mb-3">
-    <h5>Proposals Chart</h5>
-    <button class="btn btn-light" onclick="hideChart()">✖ </button>
-  </div>
-  <canvas id="proposalChart"  width="400" height="400"></canvas>
-</div>
 </div>
 
   <script

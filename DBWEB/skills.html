@@ -10,7 +10,6 @@
     rel="stylesheet"
     crossorigin="anonymous"/>
   <link rel="stylesheet" href="CSS/STYLE.CSS" />
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
   <div class="container  mt-4">
@@ -19,12 +18,11 @@
       <button class="btn btn-secondary" onclick="location.href='index.html'">🏠 Home</button>
       <div>
         <button class="btn btn-success me-2" onclick="showForm('insert')">➕ Insert</button>
-        <button class="btn btn-info" onclick="showChart()">📊 Show Chart</button>
       </div>
     </div>
 
     <h2 class="mb-3">Skill</h2>
-    <div id="tableSection" class="table-responsive">
+    <div class="table-responsive">
         <table class="table table-light table-bordered" id="skillsTable">
            <thead class="table-secondary">
                 <tr class="text-center">
@@ -49,16 +47,6 @@
         <button type="submit" class="btn btn-primary">💾 Submit</button>
       </form>
     </div>
-    
-    <!-- Chart Section -->
-    <div id="chartSection"  class="card p-4 bg-white d-none">
-      <div class="d-flex justify-content-between align-items-center mb-3">
-        <h5>Skills Chart</h5>
-        <button class="btn btn-light" onclick="hideChart()">✖ </button>
-      </div>
-  <canvas id="skillChart" width="400" height="400"></canvas>
-  
-</div>
   </div>
 
   <script

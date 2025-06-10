@@ -5,9 +5,6 @@ let categoriesData = [];
 const tbody = document.querySelector("#categoriesTable tbody");
 const formSection = document.getElementById("formSection");
 const categoryForm = document.getElementById("categoryForm");
-const chartSection = document.getElementById("chartSection");
-let chartInstance;
-
 // Render categories table
 function renderTable() {
   tbody.innerHTML = "";
@@ -83,57 +80,3 @@ categoryForm.addEventListener("submit", function (e) {
 
 // Cancel form button
 document.getElementById("cancelFormBtn").addEventListener("click", hideForm);
-
-// Show Chart
-function showChart() {
- tableSection.classList.add("d-none");
-  formSection.classList.add("d-none");
-  chartSection.classList.remove("d-none");
-
-
-  const labels = categoriesData.map(cat => cat.name);
-  const dataCounts = labels.reduce((acc, name) => {
-    acc[name] = (acc[name] || 0) + 1;
-    return acc;
-  }, {});
-  
-  const chartLabels = Object.keys(dataCounts);
-  const chartData = Object.values(dataCounts);
-
-  if (chartInstance) chartInstance.destroy();
-
-  const ctx = document.getElementById("categoryChart").getContext("2d");
-  chartInstance = new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels: chartLabels,
-      datasets: [{
-        label: 'Number of Categories',
-        data: chartData,
-        backgroundColor: "skyblue",
-        borderColor: "white",
-        borderRadius: 5,
-        borderWidth: 1,
-      }]
-    },
-    options: {
-       y: {
-    beginAtZero: true,
-    ticks: {
-      stepSize: 1
-    },
-    title: {
-      display: true,
-      text: "Count"
-    },
-        x: { title: { display: true, text: 'Category Name' } }
-      }
-    }
-  });
-}
-
-// Hide chart
-function hideChart() {
-  chartSection.classList.add("d-none");
-  tableSection.classList.remove("d-none");
-}

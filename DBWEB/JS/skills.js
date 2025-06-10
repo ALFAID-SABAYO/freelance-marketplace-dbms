@@ -4,7 +4,7 @@ const post_URL = "https://miniature-computing-machine-v6rgxgqx6wg2xj96-5249.app.
 
 // Global Variables
 let skillsData = [];
-let chartInstance = null;
+
 
 // DOM Elements
 const tbody = document.querySelector("#skillsTable tbody");
@@ -13,7 +13,6 @@ const skillForm = document.getElementById("skillForm");
 const nameInput = document.getElementById("name");
 const formTitle = document.getElementById("formTitle");
 const tableSection = document.getElementById("tableSection");
-const chartSection = document.getElementById("chartSection");
 
 // 🎨 Render Table
 function renderTable() {
@@ -95,58 +94,5 @@ document.getElementById("cancelFormBtn").addEventListener("click", () => {
   hideForm();
 });
 
-// 📊 Show Chart
-function showChart() {
-  formSection.classList.add("d-none");
-  chartSection.classList.remove("d-none");
-  tableSection.classList.add("d-none");
-
-  const skillCounts = {};
-
-  skillsData.forEach(skill => {
-    const skillName = skill.name;
-    skillCounts[skillName] = (skillCounts[skillName] || 0) + 1;
-  });
-
-  const labels = Object.keys(skillCounts);
-  const data = Object.values(skillCounts);
-
-  const ctx = document.getElementById("skillChart").getContext("2d");
-
- if (chartInstance) chartInstance.destroy(); // Destroy existing chart
-
-chartInstance = new Chart(ctx, {
-  type: "pie",
-  data: {
-    labels,
-    datasets: [{
-      label: "Skill Frequency",
-      data,
-      backgroundColor: [
-        "lightblue", "lightgreen", "lightcoral", "lightpink", 
-        "khaki", "plum", "salmon", "skyblue", "gold", "orange"
-      ],
-      borderColor: "white",
-      borderWidth: 1
-    }]
-  },
-  options: {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: 'bottom'
-      }
-    }
-  }
-});
-}
-
-// 🔙 Hide Chart
-function hideChart() {
-  chartSection.classList.add("d-none");
-  tableSection.classList.remove("d-none");
-}
-
-// 🚀 Initialize
 hideForm();
 fetchSkills();

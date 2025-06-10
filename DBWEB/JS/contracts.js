@@ -109,7 +109,7 @@ function showChart() {
       labels: Object.keys(statusCount),
       datasets: [{
         data: Object.values(statusCount),
-        backgroundColor: ["skyblue", "lightgreen", "red", "black"]
+        backgroundColor: ["#00b4d8", "red", " #2CFF05", "black"]
       }]
     },
     options: {

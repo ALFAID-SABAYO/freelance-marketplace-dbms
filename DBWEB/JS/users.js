@@ -125,7 +125,7 @@ function showChart() {
       datasets: [{
         label: "User Count",
         data,
-        backgroundColor:["plum", "lightpink"],
+        backgroundColor:["skyblue", "lightpink"],
         borderRadius: 5,
        
       borderColor: "white",
