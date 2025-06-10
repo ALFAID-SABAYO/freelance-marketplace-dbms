@@ -65,12 +65,11 @@ document.addEventListener("DOMContentLoaded", () => {
     formSection.classList.remove("d-none");
     formTitle.innerText = "Insert Freelancer Skill";
     freelancerSkillForm.dataset.mode = "insert";
-    tableSection.classList.remove("d-none");
+    tableSection.classList.add("d-none");
     chartSection.classList.add("d-none");
     freelancerSkillForm.reset();
     userInput.disabled = false;
-    // tableSection.classList.add("d-none");
-    // chartSection.classList.add("d-none");
+    
   }
 
   // === Hide Form ===

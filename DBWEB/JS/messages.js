@@ -8,6 +8,7 @@ const formSection = document.getElementById("formSection");
 const messageForm = document.getElementById("userForm");
 const cancelReviewFormBtn = document.getElementById("cancelReviewFormBtn");
 
+
 // Render messages into the table
 function renderMessages() {
   tbody.innerHTML = "";
@@ -45,12 +46,14 @@ fetchMessages();
 // Show the insert form
 function showReviewForm() {
   formSection.classList.remove("d-none");
+  tableSection.classList.add("d-none");
   messageForm.reset();
 }
 
 // Hide the form
 function hideReviewForm() {
   formSection.classList.add("d-none");
+  tableSection.classList.remove("d-none");
   messageForm.reset();
 }
 

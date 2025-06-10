@@ -5,6 +5,7 @@ let categoriesData = [];
 const tbody = document.querySelector("#categoriesTable tbody");
 const formSection = document.getElementById("formSection");
 const categoryForm = document.getElementById("categoryForm");
+const tableSection = document.getElementById("tableSection");
 // Render categories table
 function renderTable() {
   tbody.innerHTML = "";
@@ -35,17 +36,17 @@ fetchCategories();
 // Show insert form
 function showForm() {
   formSection.classList.remove("d-none");
-  chartSection.classList.add("d-none");
   document.getElementById("formTitle").innerText = "Insert Category";
-  tableSection.classList.remove("d-none");
   categoryForm.reset();
   categoryForm.classList.remove("was-validated");
+  tableSection.classList.add("d-none");
 }
 
 // Hide insert form
 function hideForm() {
   categoryForm.reset();
   formSection.classList.add("d-none");
+  tableSection.classList.remove("d-none");
 }
 
 // Handle form submission

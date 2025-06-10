@@ -78,7 +78,7 @@ function showForm() {
   formTitle.innerText = "Insert Contract";
   contractForm.dataset.mode = "insert";
   chartSection.classList.add("d-none");
-  tableSection.classList.remove("d-none");
+  tableSection.classList.add("d-none");
   contractForm.reset();
 
   const currentUser = JSON.parse(localStorage.getItem("currentUser")) || null;
@@ -135,6 +135,7 @@ function hideForm() {
   statusSelect.disabled = false;
   formSection.classList.add("d-none");
   delete contractForm.dataset.mode;
+  tableSection.classList.remove("d-none");
 }
 
 contractForm.addEventListener("submit", async (e) => {

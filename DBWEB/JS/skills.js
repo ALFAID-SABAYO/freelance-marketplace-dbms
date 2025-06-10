@@ -45,6 +45,7 @@ function fetchSkills() {
 function showForm(mode = "insert") {
   formSection.classList.remove("d-none");
   formTitle.innerText = "Insert Skill";
+  tableSection.classList.add("d-none");
   skillForm.reset();
   
 }
@@ -53,6 +54,7 @@ function showForm(mode = "insert") {
 function hideForm() {
   skillForm.reset();
   formSection.classList.add("d-none");
+  tableSection.classList.remove("d-none");
   
 }
 

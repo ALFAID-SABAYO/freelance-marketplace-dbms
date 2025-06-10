@@ -50,8 +50,8 @@ function showForm(mode) {
   formSection.classList.remove("d-none");
   document.getElementById("formTitle").innerText = "Insert Payment";
   paymentForm.dataset.mode = "insert";
-  tableSection.classList.remove("d-none");
-   chartSection.classList.add("d-none");
+  tableSection.classList.add("d-none");
+  chartSection.classList.add("d-none");
   paymentForm.reset();
   // Focus contract_id input for better UX
   document.getElementById("contract_id").focus();
@@ -61,6 +61,7 @@ function showForm(mode) {
 function hideForm() {
   paymentForm.reset();
   formSection.classList.add("d-none");
+  tableSection.classList.remove("d-none");
   insertBtn.focus();
 }
 function showChart() {
@@ -89,8 +90,8 @@ function showChart() {
       datasets: [{
         label: 'Total Amount by Contract ID',
         data: values,
-        backgroundColor: 'rgba(54, 162, 235, 0.6)',
-        borderColor: 'rgba(54, 162, 235, 1)',
+        backgroundColor: "skyblue",
+        borderColor: "skyblue",
         borderWidth: 1,
         borderRadius: 5
       }]

@@ -47,12 +47,14 @@ function showForm() {
   formSection.classList.remove("d-none");
   document.getElementById("formTitle").innerText = "Insert User";
   userForm.dataset.mode = "insert";
+  tableSection.classList.add("d-none");
   userForm.reset();
 }
 
 function hideForm() {
   userForm.reset();
   formSection.classList.add("d-none");
+  tableSection.classList.remove("d-none");
 }
 
 // Submit form

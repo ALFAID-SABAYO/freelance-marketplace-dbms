@@ -89,6 +89,7 @@ function showForm() {
   formSection.classList.remove("d-none");
   formTitle.innerText = "Submit Proposal";
   proposalForm.dataset.mode = "insert";
+  tableSection.classList.add("d-none");
   proposalForm.reset();
  
 
@@ -115,7 +116,8 @@ function hideForm() {
   freelancerIdInput.disabled = false;
   freelancerIdInput.classList.remove("alerted");
   formSection.classList.add("d-none");
-  delete proposalForm.dataset.mode;
+  tableSection.classList.remove("d-none");
+ 
 }
 
 /**

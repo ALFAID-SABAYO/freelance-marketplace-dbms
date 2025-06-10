@@ -55,7 +55,7 @@ function showReviewForm() {
   document.getElementById("formTitle").innerText = "Insert Review";
   reviewForm.dataset.mode = "insert";
   chartSection.classList.add("d-none");
-  tableSection.classList.remove("d-none");
+  tableSection.classList.add("d-none");
   reviewForm.reset();
 }
 
@@ -63,6 +63,7 @@ function showReviewForm() {
 function hideReviewForm() {
   reviewForm.reset();
   formSection.classList.add("d-none");
+  tableSection.classList.remove("d-none");
 }
 function showChart() {
   const counts = {};

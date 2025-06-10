@@ -81,7 +81,7 @@ function showForm(mode = "insert") {
   chartSection.classList.add("d-none");
   formTitle.innerText = mode === "insert" ? "Insert Project" : "Edit Project";
   projectForm.dataset.mode = mode;
-  tableSection.classList.remove("d-none");
+  tableSection.classList.add("d-none");
   projectForm.reset();
   
 }
@@ -90,6 +90,7 @@ function showForm(mode = "insert") {
 function hideForm() {
   projectForm.reset();
   formSection.classList.add("d-none");
+  tableSection.classList.remove("d-none");
   delete projectForm.dataset.id;
 }
 
@@ -214,8 +215,18 @@ function showChart() {
             callback: function(value) {
               return '$' + value.toFixed(2);
             }
+          },title: {
+            display: true,
+            text: 'Total Budget ($)'
+          }
+        },
+        x: {
+          title: {
+            display: true,
+            text: 'Category ID'
           }
         }
+
       }
     }
   });
