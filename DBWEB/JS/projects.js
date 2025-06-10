@@ -81,6 +81,7 @@ function showForm(mode = "insert") {
   chartSection.classList.add("d-none");
   formTitle.innerText = mode === "insert" ? "Insert Project" : "Edit Project";
   projectForm.dataset.mode = mode;
+  tableSection.classList.remove("d-none");
   projectForm.reset();
   
 }

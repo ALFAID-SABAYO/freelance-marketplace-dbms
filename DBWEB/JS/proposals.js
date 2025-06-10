@@ -8,15 +8,19 @@ const tableBody = document.querySelector("#proposalsTable tbody");
 const formSection = document.getElementById("formSection");
 const proposalForm = document.getElementById("userForm");
 const formTitle = document.getElementById("formTitle");
+const tableSection = document.getElementById("tableSection");
 
 const proposalIdInput = document.getElementById("proposal_id");
 const projectIdInput = document.getElementById("project_id");
 const freelancerIdInput = document.getElementById("freelancer_id");
 const bidAmountInput = document.getElementById("bid_amount");
 const messageInput = document.getElementById("message");
+const chartSection = document.getElementById("chartSection");
+const proposalChartCanvas = document.getElementById("proposalChart");
 
 let proposalData = [];
 let freelancerUserIds = new Set(); // Store valid freelancer user IDs
+let proposalChartInstance = null;
 
 // Get current logged-in user (from localStorage or auth system)
 const currentUser = JSON.parse(localStorage.getItem("currentUser")) || null;
@@ -86,7 +90,10 @@ function showForm() {
   formSection.classList.remove("d-none");
   formTitle.innerText = "Submit Proposal";
   proposalForm.dataset.mode = "insert";
+  chartSection.classList.add("d-none");
+  tableSection.classList.remove("d-none");
   proposalForm.reset();
+ 
 
   proposalIdInput.disabled = true;
 
@@ -105,13 +112,68 @@ function showForm() {
     }
   }
 }
+function showChart() {
+  formSection.classList.add("d-none");
+  chartSection.classList.remove("d-none");
+  tableSection.classList.add("d-none");
+
+
+  const ctx = document.getElementById('proposalChart').getContext('2d');
+
+  // If a chart already exists, destroy it first
+  if (proposalChartInstance) {
+    proposalChartInstance.destroy();
+  }
+
+  // Sample logic: Count number of proposals per project
+  const rows = document.querySelectorAll("#proposalsTable tbody tr");
+  const proposalCount = {};
+
+  rows.forEach(row => {
+    const projectId = row.children[1].textContent;
+    proposalCount[projectId] = (proposalCount[projectId] || 0) + 1;
+  });
+
+  const labels = Object.keys(proposalCount);
+  const data = Object.values(proposalCount);
+
+  proposalChartInstance = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Number of Proposals per Project',
+        data: data,
+        backgroundColor: 'rgba(54, 162, 235, 0.5)',
+        borderColor: 'rgba(54, 162, 235, 1)',
+        borderWidth: 1,
+        borderRadius: 5
+      }]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: {
+            stepSize: 1
+          }
+        }
+      }
+    }
+  });
+}
+function hideChart() {                  
+  chartSection.classList.add("d-none");
+  tableSection.classList.remove("d-none");
+}
 
 /**
  * Hide form and reset inputs
  */
 function hideForm() {
   proposalForm.reset();
-  proposalIdInput.disabled = false;
+  // proposalIdInput.disabled = false;
   freelancerIdInput.disabled = false;
   freelancerIdInput.classList.remove("alerted");
   formSection.classList.add("d-none");

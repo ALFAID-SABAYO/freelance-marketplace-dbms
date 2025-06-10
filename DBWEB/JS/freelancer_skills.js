@@ -65,6 +65,8 @@ document.addEventListener("DOMContentLoaded", () => {
     formSection.classList.remove("d-none");
     formTitle.innerText = "Insert Freelancer Skill";
     freelancerSkillForm.dataset.mode = "insert";
+    tableSection.classList.remove("d-none");
+    chartSection.classList.add("d-none");
     freelancerSkillForm.reset();
     userInput.disabled = false;
     // tableSection.classList.add("d-none");
@@ -116,7 +118,11 @@ document.addEventListener("DOMContentLoaded", () => {
         scales: {
           y: {
             beginAtZero: true,
-            ticks: { precision: 0 }
+            ticks: { precision: 0 },
+            title: { display: true, text: "Number of Freelancers" }
+          },
+          x: {
+            title: { display: true, text: "Skill ID" }
           }
         }
       }

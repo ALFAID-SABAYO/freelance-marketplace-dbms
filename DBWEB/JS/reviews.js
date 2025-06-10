@@ -2,12 +2,17 @@ const reviews_URL = "https://miniature-computing-machine-v6rgxgqx6wg2xj96-5249.a
 const post_URL = "https://miniature-computing-machine-v6rgxgqx6wg2xj96-5249.app.github.dev/reviews"; // POST new review
 
 let reviewsData = [];
+let reviewChartInstance = null;
 
 const tbody = document.querySelector("#reviewsTable tbody");
 const formSection = document.getElementById("formSection");
 const reviewForm = document.getElementById("userForm"); // Still uses userForm id
 const addReviewBtn = document.getElementById("addReviewBtn");
 const cancelReviewFormBtn = document.getElementById("cancelReviewFormBtn");
+const tableSection = document.getElementById("tableSection");
+
+const chartSection = document.getElementById("chartSection");
+const reviewChartCanvas = document.getElementById("reviewsChart");
 
 // Render reviews table
 function renderReviews() {
@@ -49,6 +54,8 @@ function showReviewForm() {
   formSection.classList.remove("d-none");
   document.getElementById("formTitle").innerText = "Insert Review";
   reviewForm.dataset.mode = "insert";
+  chartSection.classList.add("d-none");
+  tableSection.classList.remove("d-none");
   reviewForm.reset();
 }
 
@@ -57,7 +64,63 @@ function hideReviewForm() {
   reviewForm.reset();
   formSection.classList.add("d-none");
 }
+function showChart() {
+  const counts = {};
+  reviewsData.forEach(r => {
+    counts[r.rating] = (counts[r.rating] || 0) + 1;
+  });
 
+  const labels = Object.keys(counts).sort((a, b) => a - b); // Sort numerically
+  const values = labels.map(l => counts[l]);
+
+  const ctx = reviewChartCanvas.getContext("2d");
+  if (reviewChartInstance) reviewChartInstance.destroy();
+
+  reviewChartInstance = new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels,
+      datasets: [{
+        label: "Number of Reviews",
+        data: values,
+        backgroundColor: "skyblue",
+        borderRadius: 10,
+        borderwidth: 1,
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        title: {
+          display: true,
+          text: "Number of Reviews by Rating",
+          font: { size: 18 }
+        },
+        legend: {
+          display: false
+        }
+      },
+      scales: {
+        x: {
+          title: {
+            display: true,
+            text: "Rating"
+          }
+        },
+        y: {
+          beginAtZero: true,
+          title: {
+            display: true,
+            text: "Count"
+          }
+        }
+      }
+    }
+  });
+
+  chartSection.classList.remove("d-none");
+  tableSection.classList.add("d-none");
+}
 // Add Review button handler
 addReviewBtn?.addEventListener("click", () => {
   showReviewForm();
@@ -104,3 +167,8 @@ reviewForm.addEventListener("submit", (e) => {
       alert("❌ Failed to submit review.");
     });
 });
+
+function hideChart() {
+  chartSection.classList.add("d-none");
+  tableSection.classList.remove("d-none");
+}

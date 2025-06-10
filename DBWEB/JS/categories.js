@@ -40,6 +40,7 @@ function showForm() {
   formSection.classList.remove("d-none");
   chartSection.classList.add("d-none");
   document.getElementById("formTitle").innerText = "Insert Category";
+  tableSection.classList.remove("d-none");
   categoryForm.reset();
   categoryForm.classList.remove("was-validated");
 }
@@ -116,8 +117,16 @@ function showChart() {
       }]
     },
     options: {
-      scales: {
-        y: { beginAtZero: true }
+       y: {
+    beginAtZero: true,
+    ticks: {
+      stepSize: 1
+    },
+    title: {
+      display: true,
+      text: "Count"
+    },
+        x: { title: { display: true, text: 'Category Name' } }
       }
     }
   });

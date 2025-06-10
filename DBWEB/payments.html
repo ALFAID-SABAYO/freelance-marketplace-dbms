@@ -12,18 +12,23 @@
   />
   
   <link rel="stylesheet" href="CSS/STYLE.CSS" />
-</head>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head> <!-- ✅ Properly closed head tag -->
+
 <body>
   <div class="container mt-4">
-  
+
     <div class="mb-4 d-flex justify-content-between align-items-center">
       <button class="btn btn-secondary" onclick="location.href='index.html'">🏠 Home</button>
-      <button class="btn btn-success" onclick="showForm('insert')">➕ Insert</button>
+      <div>
+        <button class="btn btn-success" onclick="showForm('insert')">➕ Insert</button>
+        <button class="btn btn-info" onclick="showChart()">📊 Show Chart</button>
+      </div>
     </div>
 
     <h2 class="mb-3">Payments</h2>
 
-    <div class="table-responsive">
+    <div id="tableSection" class="table-responsive">
       <table class="table table-light table-bordered" id="paymentsTable">
         <thead class="table-secondary">
           <tr>
@@ -34,15 +39,14 @@
           </tr>
         </thead>
         <tbody>
-         
+          <!-- Payment rows will be inserted here dynamically -->
         </tbody>
       </table>
     </div>
 
     <div id="formSection" class="card p-4 bg-light d-none mt-4 position-relative">
       <button type="button" id="cancelFormBtn" class="btn-close position-absolute top-0 end-0 m-3" aria-label="Close"></button>
-
-      <h5 id="formTitle">Insert Payment</h5>
+      <h5 id="formTitle">Insert Payments</h5>
       <form id="userForm" novalidate>
         <div class="row">
           <div class="col-md-4 mb-3">
@@ -55,6 +59,15 @@
         <button type="submit" class="btn btn-primary">💾 Submit</button>
       </form>
     </div>
+
+    <div id="chartSection" class="card p-4 bg-white d-none">
+      <div class="d-flex justify-content-between mb-3">
+        <h5>Payments Chart</h5> 
+        <button class="btn btn-light" onclick="hideChart()">✖</button>
+      </div>
+      <canvas id="paymentChart" width="400" height="400"></canvas>
+    </div>
+    
   </div>
 
   <script
